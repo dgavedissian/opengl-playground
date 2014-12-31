@@ -31,10 +31,12 @@ set(HEADER_FILES
   src/main.h)
 
 # Dependencies
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
 find_package(SDL2 REQUIRED)
 
 # Executable
-include_directories(${SDL2_INCLUDE_DIR})
+include_directories(${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${SDL2_INCLUDE_DIR})
 add_executable(deferred ${SOURCE_FILES})
-target_link_libraries(deferred ${SDL2_LIBRARY})
+target_link_libraries(deferred ${OPENGL_LIBRARIES} ${GLEW_LIBRARY} ${SDL2_LIBRARY})
 
