@@ -1,3 +1,9 @@
+# Build folder
+build
+
+# YCM
+*.pyc
+
 # Compiled Object files
 *.slo
 *.lo
