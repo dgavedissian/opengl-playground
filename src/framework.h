@@ -5,10 +5,12 @@ public:
   Framework();
   ~Framework();
 
-  void checkSDLError();
-
+  void printSDLError();
   int createWindow(unsigned int width, unsigned int height);
   void destroyWindow();
+
+  string readFile(const string& filename);
+  GLuint loadShader(const string& vs, const string& fs);
 
   int run(unsigned int width, unsigned int height);
 

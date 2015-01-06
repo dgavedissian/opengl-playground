@@ -5,4 +5,8 @@ public:
   virtual void render();
   virtual void cleanup();
 
+private:
+  GLuint mVB;
+  GLuint mShader;
+
 };

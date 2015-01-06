@@ -12,9 +12,9 @@ Framework::~Framework()
     destroyWindow();
 }
 
-void Framework::checkSDLError()
+void Framework::printSDLError()
 {
-  std::cout << "SDL Error: " << SDL_GetError() << std::endl;
+  cout << "SDL Error: " << SDL_GetError() << endl;
 }
 
 int Framework::createWindow(unsigned int width, unsigned int height)
@@ -22,7 +22,7 @@ int Framework::createWindow(unsigned int width, unsigned int height)
   // Create a window
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
   {
-    checkSDLError();
+    printSDLError();
     return 1;
   }
 
@@ -35,7 +35,7 @@ int Framework::createWindow(unsigned int width, unsigned int height)
       width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
   if (mWindow == nullptr)
   {
-    checkSDLError();
+    printSDLError();
     return 1;
   }
 
@@ -50,8 +50,8 @@ int Framework::createWindow(unsigned int width, unsigned int height)
   // get version info
   const GLubyte* renderer = glGetString(GL_RENDERER);
   const GLubyte* version = glGetString(GL_VERSION);
-  std::cout << "Renderer: " << renderer << std::endl;
-  std::cout << "OpenGL version supported " << version << std::endl;
+  cout << "Renderer: " << renderer << endl;
+  cout << "OpenGL version supported " << version << endl;
 
   // Everything ok
   return 0;
@@ -64,10 +64,105 @@ void Framework::destroyWindow()
   SDL_Quit();
 }
 
+string Framework::readFile(const string& filename)
+{
+  string fileData = "";
+  
+  // Open the file
+  ifstream fileStream(filename, std::ios::in);
+  if(fileStream.is_open())
+  {
+    string line;
+    while(getline(fileStream, line))
+      fileData += line + "\n";
+    fileStream.close();
+  }
+  else
+  {
+    cout << "Error: Unable to open file '" << filename << "'" << endl;
+  }
+
+  return fileData;
+}
+
+GLuint Framework::loadShader(const string& vs, const string& fs)
+{
+  GLint result = GL_FALSE;
+  GLuint vsID = glCreateShader(GL_VERTEX_SHADER);
+  GLuint fsID = glCreateShader(GL_FRAGMENT_SHADER);
+
+  // Compile vertex shader
+  cout << "Compiling '" << vs << "'" << endl;
+  string vsSource = readFile(vs);
+  const char* vsSourceData = vsSource.c_str();
+  glShaderSource(vsID, 1, &vsSourceData, NULL);
+  glCompileShader(vsID);
+  
+  // Check vertex shader
+  glGetShaderiv(vsID, GL_COMPILE_STATUS, &result);
+  if (result == GL_FALSE)
+  {
+    int infoLogLength;
+    glGetShaderiv(vsID, GL_INFO_LOG_LENGTH, &infoLogLength);
+    char* errorMessage = new char[infoLogLength];
+    glGetShaderInfoLog(vsID, infoLogLength, NULL, errorMessage);
+    cout << "Error: " << errorMessage;
+    delete [] errorMessage;
+    return 0;
+  }
+  
+  // Compile fragment shader
+  cout << "Compiling '" << fs << "'" << endl;
+  string fsSource = readFile(fs);
+  const char* fsSourceData = fsSource.c_str();
+  glShaderSource(fsID, 1, &fsSourceData, NULL);
+  glCompileShader(fsID);
+  
+  // Check fragment shader
+  glGetShaderiv(fsID, GL_COMPILE_STATUS, &result);
+  if (result == GL_FALSE)
+  {
+    int infoLogLength;
+    glGetShaderiv(fsID, GL_INFO_LOG_LENGTH, &infoLogLength);
+    char* errorMessage = new char[infoLogLength];
+    glGetShaderInfoLog(fsID, infoLogLength, NULL, errorMessage);
+    cout << "Error: " << errorMessage;
+    delete [] errorMessage;
+    return 0;
+  }
+
+  // Link program
+  GLuint progID = glCreateProgram();
+  glAttachShader(progID, vsID);
+  glAttachShader(progID, fsID);
+  glLinkProgram(progID);
+
+  // Check the program
+  cout << "Linking shader" << endl;
+  glGetProgramiv(progID, GL_LINK_STATUS, &result);
+  if (result == GL_FALSE)
+  {
+    int infoLogLength;
+    glGetProgramiv(progID, GL_INFO_LOG_LENGTH, &infoLogLength);
+    char* errorMessage = new char[infoLogLength];
+    glGetProgramInfoLog(progID, infoLogLength, NULL, errorMessage);
+    cout << "Error:" << errorMessage;
+    delete [] errorMessage;
+    return 0;
+  }
+
+  // Delete shaders
+  glDeleteShader(vsID);
+  glDeleteShader(fsID);
+
+  return progID;
+}
+
 int Framework::run(unsigned int width, unsigned int height)
 {
   if (createWindow(width, height) != 0)
     return 1;
+  setup();
  
   // Main loop
   SDL_Event e;
@@ -87,6 +182,7 @@ int Framework::run(unsigned int width, unsigned int height)
     SDL_GL_SwapWindow(mWindow);
   }
 
+  cleanup();
   destroyWindow();
   return 0;
 }
