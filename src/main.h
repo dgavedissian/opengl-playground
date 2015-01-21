@@ -15,7 +15,7 @@ public:
 private:
     GLuint mVAO;
     GLuint mVBO;
-    GLuint mShader;
+    shared_ptr<Shader> mShader;
 };
 
 #endif /* MAIN_H */

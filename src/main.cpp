@@ -4,6 +4,7 @@
  */
 #include "common.h"
 #include "framework.h"
+#include "shader.h"
 #include "main.h"
 
 int main()
@@ -14,7 +15,7 @@ int main()
 
 void DeferredShading::setup()
 {
-    mShader = loadShader("media/red.vs", "media/red.fs");
+    mShader = ShaderBuilder().vs("media/red.vs").fs("media/red.fs").link();
 
     // Create a vertex array object to store vertex buffer and layout
     glGenVertexArrays(1, &mVAO);
@@ -39,13 +40,12 @@ void DeferredShading::setup()
 
 void DeferredShading::render()
 {
-    // Bind VAO
+    mShader->bind();
     glBindVertexArray(mVAO);
-    glUseProgram(mShader);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 void DeferredShading::cleanup()
 {
-    glDeleteProgram(mShader);
+    mShader.reset();
 }

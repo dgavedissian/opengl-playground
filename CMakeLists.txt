@@ -24,12 +24,14 @@ endif()
 set(SOURCE_FILES
   src/framework.cpp
   src/main.cpp
-  src/shader.cpp)
+  src/shader.cpp
+  src/utils.cpp)
 set(HEADER_FILES
   src/common.h
   src/framework.h
   src/main.h
-  src/shader.h)
+  src/shader.h
+  src/utils.h)
 
 # Dependencies
 find_package(OpenGL REQUIRED)
