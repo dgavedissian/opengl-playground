@@ -1,3 +1,7 @@
+/*
+ * GL Framework
+ * Copyright (c) David Avedissian 2014-2015
+ */
 #include "common.h"
 #include "framework.h"
 
@@ -26,6 +30,7 @@ int Framework::createWindow(unsigned int width, unsigned int height)
     }
 
     // Set up GL context
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     // Create the window
@@ -41,9 +46,16 @@ int Framework::createWindow(unsigned int width, unsigned int height)
     mContext = SDL_GL_CreateContext(mWindow);
     SDL_GL_SetSwapInterval(1);
 
-    // Set up GLEW
+    // Set up GLEW - OS X doesn't require glew: http://stackoverflow.com/a/11213354
+#ifndef __APPLE__
     glewExperimental = GL_TRUE;
-    glewInit();
+    GLenum err = glewInit();
+    if (err != GLEW_OK)
+    {
+        cout << "GLEW Error: " << glewGetErrorString(err);
+        return 1;
+    }
+#endif
 
     // get version info
     const GLubyte* renderer = glGetString(GL_RENDERER);

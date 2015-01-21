@@ -15,24 +15,27 @@ if(UNIX)
 endif()
 
 # Compile with many more warnings with GCC or Clang
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-  add_definitions(-Wall -Wextra -pedantic -Wno-unused -Wuninitialized
-    -Wmaybe-uninitialized -Wshadow -Wfloat-equal -Wold-style-cast
-    -Woverloaded-virtual)
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+  add_definitions(-Wall -Wextra -pedantic -Wno-unused -Wuninitialized -Wshadow -Wfloat-equal
+      -Wold-style-cast -Woverloaded-virtual)
 endif()
 
 # Source files
 set(SOURCE_FILES
   src/framework.cpp
-  src/main.cpp)
+  src/main.cpp
+  src/shader.cpp)
 set(HEADER_FILES
   src/common.h
   src/framework.h
-  src/main.h)
+  src/main.h
+  src/shader.h)
 
 # Dependencies
 find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
+if(NOT APPLE)
+    find_package(GLEW REQUIRED)
+endif()
 find_package(SDL2 REQUIRED)
 
 # Executable

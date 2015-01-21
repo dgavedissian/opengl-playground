@@ -1,3 +1,9 @@
+/*
+ * GL Framework
+ * Copyright (c) David Avedissian 2014-2015
+ */
+#ifndef FRAMEWORK_H
+#define FRAMEWORK_H
 
 class Framework
 {
@@ -22,3 +28,5 @@ private:
     SDL_Window* mWindow;
     SDL_GLContext mContext;
 };
+
+#endif /* FRAMEWORK_H */
