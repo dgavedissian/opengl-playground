@@ -6,97 +6,59 @@
 #include "utils.h"
 #include "shader.h"
 
-ShaderBuilder::ShaderBuilder()
+Shader::Builder::Builder()
 {
 }
 
-ShaderBuilder::~ShaderBuilder()
+Shader::Builder::~Builder()
 {
 }
 
-ShaderBuilder& ShaderBuilder::vs(const string& file)
+Shader::Builder& Shader::Builder::vs(const string& file)
 {
     mVertexShader = file;
     return *this;
 }
 
-ShaderBuilder& ShaderBuilder::fs(const string& file)
+Shader::Builder& Shader::Builder::fs(const string& file)
 {
     mFragmentShader = file;
     return *this;
 }
 
-shared_ptr<Shader> ShaderBuilder::link()
+shared_ptr<Shader> Shader::Builder::link()
 {
-    shared_ptr<Shader> out = make_shared<Shader>();
-    out->_build(mVertexShader, mFragmentShader);
-    return out;
+    return make_shared<Shader>(*this);
 }
 
-Shader::Shader() : mProgram(0)
+Shader::Shader(Shader::Builder& builder)
 {
-}
-
-Shader::~Shader()
-{
-    if (mProgram != 0)
-        glDeleteProgram(mProgram);
-}
-
-void Shader::_build(const string& vsFile, const string& fsFile)
-{
-    GLint result = GL_FALSE;
-    GLuint vsID = glCreateShader(GL_VERTEX_SHADER);
-    GLuint fsID = glCreateShader(GL_FRAGMENT_SHADER);
+    mProgram = glCreateProgram();
 
     // Compile vertex shader
-    cout << "Shader: Compiling VS '" << vsFile << "'" << endl;
-    string vsSource = utils::readFile(vsFile);
+    GLuint vsID = glCreateShader(GL_VERTEX_SHADER);
+    cout << "Shader: Compiling VS '" << builder.mVertexShader << "'" << endl;
+    string vsSource = utils::readFile(builder.mVertexShader);
     const char* vsSourceData = vsSource.c_str();
     glShaderSource(vsID, 1, &vsSourceData, NULL);
-    glCompileShader(vsID);
-
-    // Check vertex shader
-    glGetShaderiv(vsID, GL_COMPILE_STATUS, &result);
-    if (result == GL_FALSE)
-    {
-        int infoLogLength;
-        glGetShaderiv(vsID, GL_INFO_LOG_LENGTH, &infoLogLength);
-        char* errorMessage = new char[infoLogLength];
-        glGetShaderInfoLog(vsID, infoLogLength, NULL, errorMessage);
-        cout << "Error: " << errorMessage;
-        delete[] errorMessage;
-        return;
-    }
+    compileShader(vsID);
+    glAttachShader(mProgram, vsID);
 
     // Compile fragment shader
-    cout << "Shader: Compiling FS '" << fsFile << "'" << endl;
-    string fsSource = utils::readFile(fsFile);
+    GLuint fsID = glCreateShader(GL_FRAGMENT_SHADER);
+    cout << "Shader: Compiling FS '" << builder.mFragmentShader << "'" << endl;
+    string fsSource = utils::readFile(builder.mFragmentShader);
     const char* fsSourceData = fsSource.c_str();
     glShaderSource(fsID, 1, &fsSourceData, NULL);
-    glCompileShader(fsID);
-
-    // Check fragment shader
-    glGetShaderiv(fsID, GL_COMPILE_STATUS, &result);
-    if (result == GL_FALSE)
-    {
-        int infoLogLength;
-        glGetShaderiv(fsID, GL_INFO_LOG_LENGTH, &infoLogLength);
-        char* errorMessage = new char[infoLogLength];
-        glGetShaderInfoLog(fsID, infoLogLength, NULL, errorMessage);
-        cout << "Error: " << errorMessage;
-        delete[] errorMessage;
-        return;
-    }
+    compileShader(fsID);
+    glAttachShader(mProgram, fsID);
 
     // Link program
     cout << "Shader: Linking shader program" << endl;
-    mProgram = glCreateProgram();
-    glAttachShader(mProgram, vsID);
-    glAttachShader(mProgram, fsID);
     glLinkProgram(mProgram);
 
-    // Check the program
+    // Check the result of the link process
+    GLint result = GL_FALSE;
     glGetProgramiv(mProgram, GL_LINK_STATUS, &result);
     if (result == GL_FALSE)
     {
@@ -114,7 +76,35 @@ void Shader::_build(const string& vsFile, const string& fsFile)
     glDeleteShader(fsID);
 }
 
+Shader::~Shader()
+{
+    if (mProgram != 0)
+        glDeleteProgram(mProgram);
+}
+
+
 void Shader::bind()
 {
     glUseProgram(mProgram);
+}
+
+void Shader::compileShader(GLuint id)
+{
+    GLint result;
+    glCompileShader(id);
+
+    // Check compilation result
+    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+    if (result == GL_FALSE)
+    {
+        int infoLogLength;
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+        char* errorMessage = new char[infoLogLength];
+        glGetShaderInfoLog(id, infoLogLength, NULL, errorMessage);
+        cout << "Error: " << errorMessage;
+        delete[] errorMessage;
+        
+        // TODO: Error
+    }
 }

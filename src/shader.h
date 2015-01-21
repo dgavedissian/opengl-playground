@@ -5,38 +5,36 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-class Shader;
-
-class ShaderBuilder
-{
-public:
-    ShaderBuilder();
-    ~ShaderBuilder();
-
-    ShaderBuilder& vs(const string& file);
-    ShaderBuilder& fs(const string& file);
-    shared_ptr<Shader> link();
-
-private:
-    string mVertexShader;
-    string mFragmentShader;
-
-};
-
 class Shader
 {
 public:
-    Shader();
+    class Builder
+    {
+    public:
+        friend class Shader;
+
+        Builder();
+        ~Builder();
+
+        Builder& vs(const string& file);
+        Builder& fs(const string& file);
+        shared_ptr<Shader> link();
+
+    private:
+        string mVertexShader;
+        string mFragmentShader;
+    };
+
+    Shader(Builder& builder);
     ~Shader();
-
-    // Used by ShaderBuilder
-    void _build(const string& vs, const string& fs);
-
+    
     // Bind this shader
     void bind();
 
 private:
     GLuint mProgram;
+    
+    void compileShader(GLuint id);
 
 };
 

@@ -15,7 +15,7 @@ int main()
 
 void DeferredShading::setup()
 {
-    mShader = ShaderBuilder().vs("media/red.vs").fs("media/red.fs").link();
+    mShader = Shader::Builder().vs("media/red.vs").fs("media/red.fs").link();
 
     // Create a vertex array object to store vertex buffer and layout
     glGenVertexArrays(1, &mVAO);
