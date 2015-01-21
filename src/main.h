@@ -14,7 +14,7 @@ public:
 
 private:
     GLuint mVAO;
-    GLuint mVB;
+    GLuint mVBO;
     GLuint mShader;
 };
 
