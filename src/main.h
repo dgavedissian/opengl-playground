@@ -15,7 +15,9 @@ public:
 private:
     GLuint mVAO;
     GLuint mVBO;
+
     shared_ptr<Shader> mShader;
+    shared_ptr<Texture> mTexture;
 };
 
 #endif /* MAIN_H */

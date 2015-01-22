@@ -6,42 +6,50 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
 
 # Enable C++11
 if(UNIX)
-  add_definitions(-std=c++11)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-  # OS X uses the libc++ standard library as libstdc++ is massively outdated
-  if(APPLE)
-    add_definitions(-stdlib=libc++)
-  endif()
+    # OS X uses the libc++ standard library as libstdc++ is massively outdated
+    if(APPLE)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+    endif()
 endif()
 
-# Compile with many more warnings with GCC or Clang
+# Compile with many more warnings
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
-  add_definitions(-Wall -Wextra -pedantic -Wno-unused -Wuninitialized -Wshadow -Wfloat-equal
-      -Wold-style-cast -Woverloaded-virtual)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Wno-unused -Wuninitialized -Wfloat-equal -Woverloaded-virtual")
 endif()
-
-# Source files
-set(SOURCE_FILES
-  src/framework.cpp
-  src/main.cpp
-  src/shader.cpp
-  src/utils.cpp)
-set(HEADER_FILES
-  src/common.h
-  src/framework.h
-  src/main.h
-  src/shader.h
-  src/utils.h)
 
 # Dependencies
 find_package(OpenGL REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(FreeImage REQUIRED)
 if(NOT APPLE)
     find_package(GLEW REQUIRED)
 endif()
-find_package(SDL2 REQUIRED)
+
+# Framework
+set(SOURCE_FILES
+    src/framework.cpp
+    src/shader.cpp
+    src/texture.cpp
+    src/utils.cpp)
+
+set(HEADER_FILES
+    src/common.h
+    src/framework.h
+    src/shader.h
+    src/texture.h
+    src/utils.h)
+
+# Main
+set(SOURCE_FILES ${SOURCE_FILES} src/main.cpp)
+set(HEADER_FILES ${HEADER_FILES} src/main.h)
 
 # Executable
-include_directories(${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${SDL2_INCLUDE_DIR})
+include_directories(${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${SDL2_INCLUDE_DIR} ${FREEIMAGE_INCLUDE_DIRS})
 add_executable(deferred ${SOURCE_FILES})
-target_link_libraries(deferred ${OPENGL_LIBRARIES} ${GLEW_LIBRARY} ${SDL2_LIBRARY})
+target_link_libraries(deferred ${OPENGL_LIBRARIES} ${SDL2_LIBRARY} ${FREEIMAGE_LIBRARIES})
+if(NOT APPLE)
+    target_link_libraries(deferred ${GLEW_LIBRARY})
+endif()
 

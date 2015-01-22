@@ -20,6 +20,8 @@
 
 #include <SDL.h>
 
+#include "glm/glm.hpp"
+
 using std::cout;
 using std::endl;
 using std::ifstream;
