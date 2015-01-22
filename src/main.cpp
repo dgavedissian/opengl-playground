@@ -24,15 +24,26 @@ void DeferredShading::setup()
 
     // Vertices
     static const float vertices[] = {
+        -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+        0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
         -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-        0.0f, 0.5f, 0.0f, 0.5f, 0.0f
+        0.5f, -0.5f, 0.0f, 1.0f, 1.0f
+    };
+    
+    // Elements
+    GLuint elements[] = {
+        0, 2, 1, 1, 2, 3
     };
 
     // Generate vertex buffer
     glGenBuffers(1, &mVBO);
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // Generate element buffer
+    glGenBuffers(1, &mEBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 
     // Set up vertex layout
     glEnableVertexAttribArray(0);
@@ -44,11 +55,13 @@ void DeferredShading::setup()
 void DeferredShading::render()
 {
     mShader->bind();
+    mTexture->bind();
     glBindVertexArray(mVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 void DeferredShading::cleanup()
 {
+    mTexture.reset();
     mShader.reset();
 }

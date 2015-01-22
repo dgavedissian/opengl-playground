@@ -14,7 +14,9 @@ public:
 
 private:
     GLuint mVAO;
+
     GLuint mVBO;
+    GLuint mEBO;
 
     shared_ptr<Shader> mShader;
     shared_ptr<Texture> mTexture;
