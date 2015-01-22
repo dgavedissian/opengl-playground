@@ -88,6 +88,11 @@ void Shader::bind()
     glUseProgram(mProgram);
 }
 
+GLint Shader::getUniform(const string& name)
+{
+    return glGetUniformLocation(mProgram, name.c_str());
+}
+
 void Shader::compileShader(GLuint id)
 {
     GLint result;

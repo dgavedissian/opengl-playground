@@ -57,7 +57,25 @@ void DeferredShading::render()
     mShader->bind();
     mTexture->bind();
     glBindVertexArray(mVAO);
+
+    // Set shader uniforms
+    static glm::mat4 model;
+    model = glm::rotate(model, (float)clock() / (float)CLOCKS_PER_SEC * 0.1f, glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 view = glm::lookAt(
+            glm::vec3(1.2f, 1.2f, 1.2f),
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 proj = glm::perspective(45.0f, 1024.0f / 768.0f, 0.1f, 100.0f);
+    mShader->setUniform(mShader->getUniform("modelViewProj"), proj * view * model);
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    // Check for GL errors
+    GLuint err = glGetError();
+    if (err != 0)
+    {
+        cout << "GL Error: " << err << endl;
+    }
 }
 
 void DeferredShading::cleanup()
