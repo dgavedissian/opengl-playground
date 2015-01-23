@@ -5,10 +5,8 @@ layout (location = 1) in vec2 texcoord;
 
 out vec2 oTexcoord;
 
-uniform mat4 modelViewProj;
-
 void main()
 {
-    gl_Position = modelViewProj * vec4(position, 1.0);
+    gl_Position = vec4(position.xy, 0.0, 1.0);
     oTexcoord = texcoord;
 }

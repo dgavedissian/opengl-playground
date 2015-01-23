@@ -29,14 +29,18 @@ endif()
 
 # Framework
 set(SOURCE_FILES
+    src/framebuffer.cpp
     src/framework.cpp
+    src/mesh.cpp
     src/shader.cpp
     src/texture.cpp
     src/utils.cpp)
 
 set(HEADER_FILES
     src/common.h
+    src/framebuffer.h
     src/framework.h
+    src/mesh.h
     src/shader.h
     src/texture.h
     src/utils.h)

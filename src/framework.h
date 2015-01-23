@@ -12,10 +12,10 @@ public:
     ~Framework();
 
     void printSDLError();
-    int createWindow(unsigned int width, unsigned int height);
+    int createWindow(uint width, uint height);
     void destroyWindow();
 
-    int run(unsigned int width, unsigned int height);
+    int run(uint width, uint height);
 
     virtual void setup() = 0;
     virtual void render() = 0;

@@ -13,13 +13,16 @@ public:
     virtual void cleanup();
 
 private:
-    GLuint mVAO;
+    // Post process
+    shared_ptr<Texture> mFbColourTex;
+    shared_ptr<Framebuffer> mFb;
+    shared_ptr<Shader> mPostShader;
+    shared_ptr<Mesh> mQuad;
 
-    GLuint mVBO;
-    GLuint mEBO;
-
+    // Mesh
     shared_ptr<Shader> mShader;
     shared_ptr<Texture> mTexture;
+    shared_ptr<Mesh> mMesh;
 };
 
 #endif /* MAIN_H */

@@ -9,15 +9,20 @@ class Texture
 {
 public:
     Texture(const string& file);
+    Texture(uint width, uint height);
     ~Texture();
 
     void bind();
 
+    GLuint getID() const;
+    uint getWidth() const;
+    uint getHeight() const;
+
 private:
     GLuint mTextureID;
 
-    int mWidth;
-    int mHeight;
+    uint mWidth;
+    uint mHeight;
 };
 
 #endif /* TEXTURE_H */

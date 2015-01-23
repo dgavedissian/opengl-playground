@@ -37,6 +37,19 @@ Texture::Texture(const string& filename)
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
+Texture::Texture(uint width, uint height) : mWidth(width), mHeight(height)
+{
+    glGenTextures(1, &mTextureID);
+    glBindTexture(GL_TEXTURE_2D, mTextureID);
+
+    // Create image
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+    // Filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+}
+
 Texture::~Texture()
 {
     glDeleteTextures(1, &mTextureID);
@@ -47,3 +60,17 @@ void Texture::bind()
     glBindTexture(GL_TEXTURE_2D, mTextureID);
 }
 
+GLuint Texture::getID() const
+{
+    return mTextureID;
+}
+
+uint Texture::getWidth() const
+{
+    return mWidth;
+}
+
+uint Texture::getHeight() const
+{
+    return mHeight;
+}

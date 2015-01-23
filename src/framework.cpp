@@ -20,7 +20,7 @@ void Framework::printSDLError()
     cout << "SDL Error: " << SDL_GetError() << endl;
 }
 
-int Framework::createWindow(unsigned int width, unsigned int height)
+int Framework::createWindow(uint width, uint height)
 {
     // Create a window
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -74,7 +74,7 @@ void Framework::destroyWindow()
     SDL_Quit();
 }
 
-int Framework::run(unsigned int width, unsigned int height)
+int Framework::run(uint width, uint height)
 {
     if (createWindow(width, height) != 0)
         return 1;
@@ -93,7 +93,6 @@ int Framework::run(unsigned int width, unsigned int height)
         }
 
         // Render a frame
-        glClear(GL_COLOR_BUFFER_BIT);
         render();
         SDL_GL_SwapWindow(mWindow);
     }

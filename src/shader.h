@@ -51,7 +51,8 @@ template <> inline void Shader::setUniform(GLint location, const float& value)
 
 template <> inline void Shader::setUniform(GLint location, const glm::vec2& value)
 {
-    glUniform2f(location, value.x, value.y); }
+    glUniform2f(location, value.x, value.y);
+}
 
 template <> inline void Shader::setUniform(GLint location, const glm::vec3& value)
 {
