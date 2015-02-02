@@ -17,9 +17,11 @@ public:
 
     int run(uint width, uint height);
 
+    // Application callbacks
     virtual void setup() = 0;
-    virtual void render() = 0;
+    virtual bool drawFrame() = 0;
     virtual void cleanup() = 0;
+    virtual void onKeyDown(SDL_Keycode kc) = 0;
 
 private:
     SDL_Window* mWindow;

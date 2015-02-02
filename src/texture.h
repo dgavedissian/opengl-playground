@@ -9,7 +9,7 @@ class Texture
 {
 public:
     Texture(const string& file);
-    Texture(uint width, uint height);
+    Texture(uint width, uint height, GLuint format = GL_RGB, GLuint type = GL_UNSIGNED_BYTE);
     ~Texture();
 
     void bind();

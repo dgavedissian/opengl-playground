@@ -6,39 +6,14 @@
 #include "utils.h"
 #include "shader.h"
 
-Shader::Builder::Builder()
-{
-}
-
-Shader::Builder::~Builder()
-{
-}
-
-Shader::Builder& Shader::Builder::vs(const string& file)
-{
-    mVertexShader = file;
-    return *this;
-}
-
-Shader::Builder& Shader::Builder::fs(const string& file)
-{
-    mFragmentShader = file;
-    return *this;
-}
-
-shared_ptr<Shader> Shader::Builder::link()
-{
-    return make_shared<Shader>(*this);
-}
-
-Shader::Shader(Shader::Builder& builder)
+Shader::Shader(const string& vs, const string& fs)
 {
     mProgram = glCreateProgram();
 
     // Compile vertex shader
     GLuint vsID = glCreateShader(GL_VERTEX_SHADER);
-    cout << "Shader: Compiling VS '" << builder.mVertexShader << "'" << endl;
-    string vsSource = utils::readFile(builder.mVertexShader);
+    cout << "Shader: Compiling VS '" << vs << "'" << endl;
+    string vsSource = utils::readFile(vs);
     const char* vsSourceData = vsSource.c_str();
     glShaderSource(vsID, 1, &vsSourceData, NULL);
     compileShader(vsID);
@@ -46,8 +21,8 @@ Shader::Shader(Shader::Builder& builder)
 
     // Compile fragment shader
     GLuint fsID = glCreateShader(GL_FRAGMENT_SHADER);
-    cout << "Shader: Compiling FS '" << builder.mFragmentShader << "'" << endl;
-    string fsSource = utils::readFile(builder.mFragmentShader);
+    cout << "Shader: Compiling FS '" << fs << "'" << endl;
+    string fsSource = utils::readFile(fs);
     const char* fsSourceData = fsSource.c_str();
     glShaderSource(fsID, 1, &fsSourceData, NULL);
     compileShader(fsID);
@@ -86,11 +61,6 @@ Shader::~Shader()
 void Shader::bind()
 {
     glUseProgram(mProgram);
-}
-
-GLint Shader::getUniform(const string& name)
-{
-    return glGetUniformLocation(mProgram, name.c_str());
 }
 
 void Shader::compileShader(GLuint id)

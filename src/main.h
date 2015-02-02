@@ -9,20 +9,20 @@ class DeferredShading : public Framework
 {
 public:
     virtual void setup();
-    virtual void render();
+    virtual bool drawFrame();
     virtual void cleanup();
+    virtual void onKeyDown(SDL_Keycode kc);
 
 private:
     // Post process
-    shared_ptr<Texture> mFbColourTex;
-    shared_ptr<Framebuffer> mFb;
-    shared_ptr<Shader> mPostShader;
-    shared_ptr<Mesh> mQuad;
+    Framebuffer* mFb;
+    VertexBuffer* mQuad;
+    Shader* mPostShader;
 
     // Mesh
-    shared_ptr<Shader> mShader;
-    shared_ptr<Texture> mTexture;
-    shared_ptr<Mesh> mMesh;
+    VertexBuffer* mMesh;
+    Texture* mTexture;
+    Shader* mShader;
 };
 
 #endif /* MAIN_H */

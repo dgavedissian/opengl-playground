@@ -8,7 +8,9 @@
 #include <cassert>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
+#include <vector>
 #include <memory>
 
 // OS X doesn't require glew: http://stackoverflow.com/a/11213354
@@ -25,10 +27,12 @@
 #include "glm/gtc/type_ptr.hpp"
 
 using std::cout;
+using std::cerr;
 using std::endl;
 using std::ifstream;
+using std::stringstream;
 using std::string;
-using std::make_shared;
-using std::shared_ptr;
+using std::unique_ptr;
+using std::vector;
 
 #endif /* COMMON_H */

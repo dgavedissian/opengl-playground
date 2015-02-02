@@ -10,15 +10,19 @@ class Texture;
 class Framebuffer
 {
 public:
-    Framebuffer(shared_ptr<Texture> colourBuffer);
+    Framebuffer(uint width, uint height, uint textureCount);
     ~Framebuffer();
 
     void bind();
 
+    Texture* getColourBuffer(uint i);
+
 private:
     uint mWidth, mHeight;
-    shared_ptr<Texture> mColourBuffer;
-    GLuint mFramebuffer, mDepthBuffer;
+
+    vector<unique_ptr<Texture>> mTextures;
+    GLuint mFramebuffer;
+    GLuint mDepthBuffer;
 };
 
 #endif /* FRAMEBUFFER_H */

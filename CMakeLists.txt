@@ -16,7 +16,8 @@ endif()
 
 # Compile with many more warnings
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Wno-unused -Wuninitialized -Wfloat-equal -Woverloaded-virtual")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Wno-unused -Wuninitialized \
+            -Wfloat-equal -Woverloaded-virtual")
 endif()
 
 # Dependencies
@@ -31,19 +32,19 @@ endif()
 set(SOURCE_FILES
     src/framebuffer.cpp
     src/framework.cpp
-    src/mesh.cpp
     src/shader.cpp
     src/texture.cpp
-    src/utils.cpp)
+    src/utils.cpp
+    src/vertexbuffer.cpp)
 
 set(HEADER_FILES
     src/common.h
     src/framebuffer.h
     src/framework.h
-    src/mesh.h
     src/shader.h
     src/texture.h
-    src/utils.h)
+    src/utils.h
+    src/vertexbuffer.h)
 
 # Main
 set(SOURCE_FILES ${SOURCE_FILES} src/main.cpp)

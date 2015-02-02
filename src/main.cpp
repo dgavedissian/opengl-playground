@@ -4,84 +4,80 @@
  */
 #include "common.h"
 #include "framework.h"
+
+#include "framebuffer.h"
 #include "shader.h"
 #include "texture.h"
-#include "mesh.h"
-#include "framebuffer.h"
+#include "vertexbuffer.h"
+
 #include "main.h"
+
+#define WIDTH 1024
+#define HEIGHT 768
 
 int main()
 {
-    return DeferredShading().run(1024, 768);
+    return DeferredShading().run(WIDTH, HEIGHT);
 }
 
 void DeferredShading::setup()
 {
     // Quad mesh data
-    float quadVertices[] = {
+    vector<float> quadVertices =
+    {
         -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
         1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
         -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
         1.0f, -1.0f, 0.0f, 1.0f, 0.0f
     };
-    GLuint quadElements[] = { 0, 2, 1, 1, 2, 3 };
+    vector<GLuint> quadElements = {0, 2, 1, 1, 2, 3};
+    vector<VertexAttribute> quadLayout = {{3, GL_FLOAT}, {2, GL_FLOAT}};
 
     // Set up post processing
-    mFbColourTex = make_shared<Texture>(1024, 768);
-    mFb = make_shared<Framebuffer>(mFbColourTex);
-    mPostShader = Shader::Builder()
-        .vs("media/quad.vs")
-        .fs("media/post.fs")
-        .link();
-    mQuad = Mesh::Builder()
-        .vertices(quadVertices, sizeof(quadVertices))
-        .elements(quadElements, sizeof(quadElements))
-        .build();
+    mFb = new Framebuffer(WIDTH, HEIGHT, 1);
+    mPostShader = new Shader("media/quad.vs", "media/post.fs");
+    mQuad = new VertexBuffer(quadVertices, quadElements, quadLayout);
 
     // Set up scene
-    mShader = Shader::Builder()
-        .vs("media/sample.vs")
-        .fs("media/sample.fs")
-        .link();
-    mTexture = make_shared<Texture>("media/sample.png");
+    mShader = new Shader("media/sample.vs", "media/sample.fs");
+    mTexture = new Texture("media/wall.jpg");
 
     // Vertices
-    float vertices[] = {
-        -1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-        1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-        -1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-        1.0f, -1.0f, 0.0f, 1.0f, 1.0f
+    vector<float> vertices =
+    {
+        -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f
     };
+    vector<GLuint> elements = {0, 2, 1, 1, 2, 3};
+    vector<VertexAttribute> layout = {{3, GL_FLOAT}, {3, GL_FLOAT}, {2, GL_FLOAT}};
 
-    mMesh = Mesh::Builder()
-        .vertices(vertices, sizeof(vertices))
-        .elements(quadElements, sizeof(quadElements))
-        .build();
+    mMesh = new VertexBuffer(vertices, elements, layout);
 }
 
-void DeferredShading::render()
+bool DeferredShading::drawFrame()
 {
     // Start remdering to the framebuffer
     mFb->bind();
     glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     {
-        // Bind object data
+        // Set up the shader parameters
         mShader->bind();
-        mTexture->bind();
-        mMesh->bind();
-
-        // Set shader uniforms
         static glm::mat4 model;
-        //model = glm::rotate(model, (float)clock() / (float)CLOCKS_PER_SEC * 0.1f, glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::rotate(model, (float)clock() / (float)CLOCKS_PER_SEC * 0.05f, glm::vec3(0.0f, 1.0f, 0.0f));
         glm::mat4 view = glm::lookAt(
-            glm::vec3(0.0f, 1.0f, 2.0f),
+            glm::vec3(0.0f, 0.0f, 2.0f),
             glm::vec3(0.0f, 0.0f, 0.0f),
             glm::vec3(0.0f, 1.0f, 0.0f));
-        glm::mat4 proj = glm::perspective(45.0f, 1024.0f / 768.0f, 0.1f, 100.0f);
-        mShader->setUniform(mShader->getUniform("modelViewProj"), proj * view * model);
+        glm::mat4 proj = glm::perspective(45.0f, (float)WIDTH / HEIGHT, 0.1f, 100.0f);
+        mShader->setUniform("modelViewProj", proj * view * model);
+        mShader->setUniform("model", model);
 
         // Draw the mesh
+        mTexture->bind();
+        mMesh->bind();
         mMesh->draw();
     }
 
@@ -90,26 +86,38 @@ void DeferredShading::render()
     glDisable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT);
     {
-        mPostShader->bind();
-        mFbColourTex->bind();
-        mQuad->bind();
-        
         static float val = 0.0f;
         val += 0.01f;
-        mPostShader->setUniform(mPostShader->getUniform("val"), val);
+        mPostShader->bind();
         
+        mFb->getColourBuffer(0)->bind();
+        mQuad->bind();
         mQuad->draw();
     }
 
     // Check for GL errors
     GLuint err = glGetError();
     if (err != 0)
-        cout << "GL Error: " << err << endl;
+    {
+        cerr << "glGetError() returned " << err << endl;
+        return false;
+    }
+
+    return true;
 }
 
 void DeferredShading::cleanup()
 {
-    mMesh.reset();
-    mTexture.reset();
-    mShader.reset();
+    delete mShader;
+    delete mTexture;
+    delete mMesh;
+
+    delete mPostShader;
+    delete mQuad;
+    delete mFb;
+}
+
+void DeferredShading::onKeyDown(SDL_Keycode kc)
+{
+    cout << "Key " << kc << " pressed!" << endl;
 }

@@ -88,12 +88,26 @@ int Framework::run(uint width, uint height)
         // Handle message pump
         while (SDL_PollEvent(&e) != 0)
         {
-            if (e.type == SDL_QUIT)
+            switch (e.type)
+            {
+            case SDL_QUIT:
                 quit = true;
+                break;
+
+            case SDL_KEYDOWN:
+                onKeyDown(e.key.keysym.sym);
+                break;
+
+            default:
+                break;
+            }
         }
 
         // Render a frame
-        render();
+        if (!drawFrame())
+            quit = true;
+
+        // Swap the front and backbuffer
         SDL_GL_SwapWindow(mWindow);
     }
 

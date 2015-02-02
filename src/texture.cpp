@@ -37,13 +37,13 @@ Texture::Texture(const string& filename)
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-Texture::Texture(uint width, uint height) : mWidth(width), mHeight(height)
+Texture::Texture(uint width, uint height, GLuint format, GLuint type) : mWidth(width), mHeight(height)
 {
     glGenTextures(1, &mTextureID);
     glBindTexture(GL_TEXTURE_2D, mTextureID);
 
     // Create image
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGB, type, NULL);
 
     // Filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
