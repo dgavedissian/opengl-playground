@@ -23,7 +23,9 @@ string readFile(const string& file)
     }
     else
     {
-        cout << "Error: Unable to open file '" << file << "'" << endl;
+        stringstream err;
+        err << "Error: Unable to open file '" << file << "'" << endl;
+        throw std::runtime_error(err.str());
     }
 
     return fileData;

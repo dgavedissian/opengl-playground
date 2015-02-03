@@ -14,7 +14,8 @@ struct VertexAttribute
 class VertexBuffer
 {
 public:
-    VertexBuffer(vector<float> vertexData, vector<GLuint> elementData,
+    VertexBuffer(vector<GLfloat> vertexData, vector<VertexAttribute> layout);
+    VertexBuffer(vector<GLfloat> vertexData, vector<GLuint> elementData,
                  vector<VertexAttribute> layout);
     ~VertexBuffer();
 
@@ -22,7 +23,7 @@ public:
     void draw();
 
 private:
-    GLuint mVao, mVbo, mEbo;
+    GLuint mVAO, mVBO, mEBO;
     uint mVertexCount;
 };
 

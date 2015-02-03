@@ -14,6 +14,6 @@ void main()
     vec3 normal = texture(gb2, oTexcoord).rgb;
 
     // Perform directional lighting
-    float lighting = dot(normal, vec3(1.0, 0.0, 0.0));
+    float lighting = clamp(dot(normal, vec3(1.0, 0.0, 0.0)), 0.0, 1.0);
     colour = vec4(diffuse * lighting, 1.0);
 }
