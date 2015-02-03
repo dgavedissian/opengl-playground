@@ -34,9 +34,12 @@ void DeferredShading::setup()
     vector<VertexAttribute> quadLayout = {{3, GL_FLOAT}, {2, GL_FLOAT}};
 
     // Set up post processing
-    mFb = new Framebuffer(WIDTH, HEIGHT, 1);
+    mFb = new Framebuffer(WIDTH, HEIGHT, 3);
     mPostShader = new Shader("media/quad.vs", "media/post.fs");
     mQuad = new VertexBuffer(quadVertices, quadElements, quadLayout);
+    mPostShader->setUniform<int>("gb0", 0);
+    //mPostShader->setUniform<int>("gb1", 1);
+    //mPostShader->setUniform<int>("gb2", 2);
 
     // Set up scene
     mShader = new Shader("media/sample.vs", "media/sample.fs");
@@ -76,6 +79,7 @@ bool DeferredShading::drawFrame()
         mShader->setUniform("model", model);
 
         // Draw the mesh
+        glActiveTexture(GL_TEXTURE0);
         mTexture->bind();
         mMesh->bind();
         mMesh->draw();
@@ -89,8 +93,13 @@ bool DeferredShading::drawFrame()
         static float val = 0.0f;
         val += 0.01f;
         mPostShader->bind();
-        
+       
+        glActiveTexture(GL_TEXTURE0);
         mFb->getColourBuffer(0)->bind();
+        glActiveTexture(GL_TEXTURE1);
+        mFb->getColourBuffer(1)->bind();
+        glActiveTexture(GL_TEXTURE2);
+        mFb->getColourBuffer(2)->bind();
         mQuad->bind();
         mQuad->draw();
     }

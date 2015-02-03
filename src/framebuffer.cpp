@@ -28,6 +28,12 @@ Framebuffer::Framebuffer(uint width, uint height, uint textureCount)
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, mDepthBuffer);
 
+    // Set the list of draw buffers
+    vector<GLenum> drawBuffers;
+    for (uint i = 0; i < textureCount; i++)
+        drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + i);
+    glDrawBuffers(textureCount, drawBuffers.data());
+
     // Check for errors
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (status != GL_FRAMEBUFFER_COMPLETE)

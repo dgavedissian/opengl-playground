@@ -57,7 +57,6 @@ Shader::~Shader()
         glDeleteProgram(mProgram);
 }
 
-
 void Shader::bind()
 {
     glUseProgram(mProgram);
@@ -82,4 +81,9 @@ void Shader::compileShader(GLuint id)
         
         // TODO: Error
     }
+}
+
+GLint Shader::getUniformLocation(const string& name)
+{
+    return glGetUniformLocation(mProgram, name.c_str());
 }
