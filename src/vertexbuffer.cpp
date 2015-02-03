@@ -3,7 +3,7 @@
  * Copyright (c) David Avedissian 2014-2015
  */
 #include "common.h"
-#include "vertexBuffer.h"
+#include "vertexbuffer.h"
 
 VertexBuffer::VertexBuffer(vector<float> vertexData, vector<GLuint> elementData,
                            vector<VertexAttribute> layout)

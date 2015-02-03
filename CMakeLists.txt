@@ -53,7 +53,7 @@ set(HEADER_FILES ${HEADER_FILES} src/main.h)
 # Executable
 include_directories(${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${SDL2_INCLUDE_DIR} ${FREEIMAGE_INCLUDE_DIRS})
 add_executable(deferred ${SOURCE_FILES})
-target_link_libraries(deferred ${OPENGL_LIBRARIES} ${SDL2_LIBRARY} ${FREEIMAGE_LIBRARIES})
+target_link_libraries(deferred ${OPENGL_LIBRARIES} ${SDL2_LIBRARIES} ${FREEIMAGE_LIBRARIES})
 if(NOT APPLE)
     target_link_libraries(deferred ${GLEW_LIBRARY})
 endif()
