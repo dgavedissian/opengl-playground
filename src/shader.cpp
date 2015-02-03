@@ -85,5 +85,8 @@ void Shader::compileShader(GLuint id)
 
 GLint Shader::getUniformLocation(const string& name)
 {
-    return glGetUniformLocation(mProgram, name.c_str());
+    GLint location = glGetUniformLocation(mProgram, name.c_str());
+    if (location == -1)
+        cerr << "Unable to find uniform " << name << endl;
+    return location;
 }

@@ -37,9 +37,10 @@ void DeferredShading::setup()
     mFb = new Framebuffer(WIDTH, HEIGHT, 3);
     mPostShader = new Shader("media/quad.vs", "media/post.fs");
     mQuad = new VertexBuffer(quadVertices, quadElements, quadLayout);
+    mPostShader->bind();
     mPostShader->setUniform<int>("gb0", 0);
-    //mPostShader->setUniform<int>("gb1", 1);
-    //mPostShader->setUniform<int>("gb2", 2);
+    mPostShader->setUniform<int>("gb1", 1);
+    mPostShader->setUniform<int>("gb2", 2);
 
     // Set up scene
     mShader = new Shader("media/sample.vs", "media/sample.fs");

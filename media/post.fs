@@ -10,5 +10,10 @@ uniform sampler2D gb2;
 
 void main()
 {
-    colour = vec4(texture(gb2, oTexcoord).rgb, 1.0);
+    vec3 diffuse = texture(gb0, oTexcoord).rgb;
+    vec3 normal = texture(gb2, oTexcoord).rgb;
+
+    // Perform directional lighting
+    float lighting = dot(normal, vec3(1.0, 0.0, 0.0));
+    colour = vec4(diffuse * lighting, 1.0);
 }
