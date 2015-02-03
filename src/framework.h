@@ -23,6 +23,10 @@ public:
     virtual void cleanup() = 0;
     virtual void onKeyDown(SDL_Keycode kc) = 0;
 
+protected:
+    glm::mat4 mViewMatrix;
+    glm::mat4 mProjMatrix;
+
 private:
     SDL_Window* mWindow;
     SDL_GLContext mContext;
