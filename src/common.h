@@ -29,9 +29,14 @@
 using std::cout;
 using std::cerr;
 using std::endl;
+
 using std::ifstream;
 using std::stringstream;
 using std::string;
+
+using std::pair;
+using std::make_pair;
+
 using std::unique_ptr;
 using std::vector;
 
