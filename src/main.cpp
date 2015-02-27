@@ -142,7 +142,7 @@ public:
         mTexture = new Texture("media/wall.jpg");
 
         // Vertices
-        vector<VertexAttribute> layout = {{3, GL_FLOAT}, {3, GL_FLOAT}};
+        vector<VertexAttribute> layout = {{3, GL_FLOAT}, {3, GL_FLOAT}, {2, GL_FLOAT}};
         mMesh = new VertexBuffer(generateBox(0.5f), layout);
 
         // Light
@@ -152,7 +152,7 @@ public:
                 {
                     if (!(x == y == z))
                         continue; 
-                    PointLight* light = new PointLight(0.5f, 0.0f, 2.0f);
+                    PointLight* light = new PointLight(0.75f, 0.0f, 1.0f);
                     light->setPosition(glm::vec3(x, y, z) * 0.6f);
                     lights.push_back(light);
                 }
@@ -161,7 +161,7 @@ public:
     virtual bool drawFrame()
     {
         mViewMatrix = glm::lookAt(
-            glm::vec3(0.0f, 2.0f, 5.0f),
+            glm::vec3(0.0f, 1.0f, 2.5f),
             glm::vec3(0.0f, 0.0f, 0.0f),
             glm::vec3(0.0f, 1.0f, 0.0f));
         mProjMatrix = glm::perspective(45.0f, (float)WIDTH / HEIGHT, 0.1f, 10000.0f);
@@ -243,47 +243,47 @@ int main()
 vector<GLfloat> generateBox(float halfSize)
 {
     return {
-        -halfSize, -halfSize, -halfSize,  0.0f,  0.0f, -1.0f,
-        halfSize, -halfSize, -halfSize,  0.0f,  0.0f, -1.0f,
-        halfSize,  halfSize, -halfSize,  0.0f,  0.0f, -1.0f,
-        halfSize,  halfSize, -halfSize,  0.0f,  0.0f, -1.0f,
-        -halfSize,  halfSize, -halfSize,  0.0f,  0.0f, -1.0f,
-        -halfSize, -halfSize, -halfSize,  0.0f,  0.0f, -1.0f,
+        -halfSize, -halfSize, -halfSize,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,
+        halfSize, -halfSize, -halfSize,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f,
+        halfSize,  halfSize, -halfSize,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,
+        halfSize,  halfSize, -halfSize,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,
+        -halfSize,  halfSize, -halfSize,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f,
+        -halfSize, -halfSize, -halfSize,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,
 
-        -halfSize, -halfSize,  halfSize,  0.0f,  0.0f, 1.0f,
-        halfSize, -halfSize,  halfSize,  0.0f,  0.0f, 1.0f,
-        halfSize,  halfSize,  halfSize,  0.0f,  0.0f, 1.0f,
-        halfSize,  halfSize,  halfSize,  0.0f,  0.0f, 1.0f,
-        -halfSize,  halfSize,  halfSize,  0.0f,  0.0f, 1.0f,
-        -halfSize, -halfSize,  halfSize,  0.0f,  0.0f, 1.0f,
+        -halfSize, -halfSize,  halfSize,  0.0f,  0.0f, 1.0f, 0.0f, 0.0f,
+        halfSize, -halfSize,  halfSize,  0.0f,  0.0f, 1.0f, 1.0f, 0.0f,
+        halfSize,  halfSize,  halfSize,  0.0f,  0.0f, 1.0f, 1.0f, 1.0f,
+        halfSize,  halfSize,  halfSize,  0.0f,  0.0f, 1.0f, 1.0f, 1.0f,
+        -halfSize,  halfSize,  halfSize,  0.0f,  0.0f, 1.0f, 0.0f, 1.0f,
+        -halfSize, -halfSize,  halfSize,  0.0f,  0.0f, 1.0f, 0.0f, 0.0f,
 
-        -halfSize,  halfSize,  halfSize, -1.0f,  0.0f,  0.0f,
-        -halfSize,  halfSize, -halfSize, -1.0f,  0.0f,  0.0f,
-        -halfSize, -halfSize, -halfSize, -1.0f,  0.0f,  0.0f,
-        -halfSize, -halfSize, -halfSize, -1.0f,  0.0f,  0.0f,
-        -halfSize, -halfSize,  halfSize, -1.0f,  0.0f,  0.0f,
-        -halfSize,  halfSize,  halfSize, -1.0f,  0.0f,  0.0f,
+        -halfSize,  halfSize,  halfSize, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f,
+        -halfSize,  halfSize, -halfSize, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
+        -halfSize, -halfSize, -halfSize, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
+        -halfSize, -halfSize, -halfSize, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
+        -halfSize, -halfSize,  halfSize, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f,
+        -halfSize,  halfSize,  halfSize, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f,
 
-        halfSize,  halfSize,  halfSize,  1.0f,  0.0f,  0.0f,
-        halfSize,  halfSize, -halfSize,  1.0f,  0.0f,  0.0f,
-        halfSize, -halfSize, -halfSize,  1.0f,  0.0f,  0.0f,
-        halfSize, -halfSize, -halfSize,  1.0f,  0.0f,  0.0f,
-        halfSize, -halfSize,  halfSize,  1.0f,  0.0f,  0.0f,
-        halfSize,  halfSize,  halfSize,  1.0f,  0.0f,  0.0f,
+        halfSize,  halfSize,  halfSize,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f,
+        halfSize,  halfSize, -halfSize,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
+        halfSize, -halfSize, -halfSize,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
+        halfSize, -halfSize, -halfSize,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
+        halfSize, -halfSize,  halfSize,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f,
+        halfSize,  halfSize,  halfSize,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f,
 
-        -halfSize, -halfSize, -halfSize,  0.0f, -1.0f,  0.0f,
-        halfSize, -halfSize, -halfSize,  0.0f, -1.0f,  0.0f,
-        halfSize, -halfSize,  halfSize,  0.0f, -1.0f,  0.0f,
-        halfSize, -halfSize,  halfSize,  0.0f, -1.0f,  0.0f,
-        -halfSize, -halfSize,  halfSize,  0.0f, -1.0f,  0.0f,
-        -halfSize, -halfSize, -halfSize,  0.0f, -1.0f,  0.0f,
+        -halfSize, -halfSize, -halfSize,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f,
+        halfSize, -halfSize, -halfSize,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,
+        halfSize, -halfSize,  halfSize,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f,
+        halfSize, -halfSize,  halfSize,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f,
+        -halfSize, -halfSize,  halfSize,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f,
+        -halfSize, -halfSize, -halfSize,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f,
 
-        -halfSize,  halfSize, -halfSize,  0.0f,  1.0f,  0.0f,
-        halfSize,  halfSize, -halfSize,  0.0f,  1.0f,  0.0f,
-        halfSize,  halfSize,  halfSize,  0.0f,  1.0f,  0.0f,
-        halfSize,  halfSize,  halfSize,  0.0f,  1.0f,  0.0f,
-        -halfSize,  halfSize,  halfSize,  0.0f,  1.0f,  0.0f,
-        -halfSize,  halfSize, -halfSize,  0.0f,  1.0f,  0.0f
+        -halfSize,  halfSize, -halfSize,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f,
+        halfSize,  halfSize, -halfSize,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,
+        halfSize,  halfSize,  halfSize,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f,
+        halfSize,  halfSize,  halfSize,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f,
+        -halfSize,  halfSize,  halfSize,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f,
+        -halfSize,  halfSize, -halfSize,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f
     };
 }
 
