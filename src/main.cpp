@@ -2,6 +2,8 @@
  * GL Framework
  * Copyright (c) David Avedissian 2014-2015
  */
+#include <ctime>
+
 #include "common.h"
 #include "framework.h"
 
@@ -15,6 +17,11 @@
 
 vector<GLfloat> generateBox(float halfSize);
 pair<vector<GLfloat>, vector<GLuint>> generateLightSphere(float radius, int rings, int segments);
+
+float timeSinceEpoch()
+{
+	return (float)clock() / (float)CLOCKS_PER_SEC;
+}
 
 class PointLight
 {
@@ -174,7 +181,7 @@ public:
             // Set up the shader parameters
             mShader->bind();
             static glm::mat4 world;
-            world = glm::rotate(world, (float)clock() / (float)CLOCKS_PER_SEC * 0.05f, glm::vec3(0.0f, 1.0f, 0.0f));
+			world = glm::rotate(world, 0.05f, glm::vec3(0.0f, 1.0f, 0.0f));
             mShader->setUniform("worldViewProj", mProjMatrix * mViewMatrix * world);
             mShader->setUniform("world", world);
 
@@ -235,7 +242,7 @@ public:
     }
 };
 
-int main()
+int main(int argc, char** argv)
 {
     return DeferredShading().run(WIDTH, HEIGHT);
 }

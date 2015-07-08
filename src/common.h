@@ -5,6 +5,11 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#ifdef WIN32
+#	define GLEW_STATIC
+#	pragma warning(push, 0)
+#endif
+
 #include <cassert>
 #include <iostream>
 #include <fstream>
@@ -39,5 +44,11 @@ using std::make_pair;
 
 using std::unique_ptr;
 using std::vector;
+
+typedef uint32_t uint;
+
+#ifdef WIN32
+#	pragma warning(pop)
+#endif
 
 #endif /* COMMON_H */
