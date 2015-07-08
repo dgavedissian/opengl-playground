@@ -35,7 +35,6 @@ endfunction()
 # Mirror the directory structure in virtual directory based projects
 function(mirror_physical_directories)
     foreach(FILE ${ARGN})
-        message(STATUS ${FILE})
         get_filename_component(PARENT_DIR "${FILE}" PATH)
         string(REPLACE "/" "\\" GROUP "${PARENT_DIR}")
         source_group("${GROUP}" FILES "${FILE}")

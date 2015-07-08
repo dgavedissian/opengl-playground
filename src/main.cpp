@@ -4,13 +4,13 @@
  */
 #include <ctime>
 
-#include "common.h"
-#include "framework.h"
+#include "framework/common.h"
+#include "framework/framework.h"
 
-#include "framebuffer.h"
-#include "shader.h"
-#include "texture.h"
-#include "vertexbuffer.h"
+#include "framework/framebuffer.h"
+#include "framework/shader.h"
+#include "framework/texture.h"
+#include "framework/vertexbuffer.h"
 
 #define WIDTH 1024
 #define HEIGHT 768

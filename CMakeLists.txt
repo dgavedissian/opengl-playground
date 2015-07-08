@@ -19,21 +19,21 @@ endif()
 
 # Framework
 set(SOURCE_FILES
-    src/framebuffer.cpp
-    src/framework.cpp
-    src/shader.cpp
-    src/texture.cpp
-    src/utils.cpp
-    src/vertexbuffer.cpp)
+    src/framework/framebuffer.cpp
+    src/framework/framework.cpp
+    src/framework/shader.cpp
+    src/framework/texture.cpp
+    src/framework/utils.cpp
+    src/framework/vertexbuffer.cpp)
 
 set(HEADER_FILES
-    src/common.h
-    src/framebuffer.h
-    src/framework.h
-    src/shader.h
-    src/texture.h
-    src/utils.h
-    src/vertexbuffer.h)
+    src/framework/common.h
+    src/framework/framebuffer.h
+    src/framework/framework.h
+    src/framework/shader.h
+    src/framework/texture.h
+    src/framework/utils.h
+    src/framework/vertexbuffer.h)
 
 # Main
 set(SOURCE_FILES ${SOURCE_FILES} src/main.cpp)
