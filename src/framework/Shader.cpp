@@ -10,49 +10,21 @@ Shader::Shader(const string& vs, const string& fs)
 {
     mProgram = glCreateProgram();
 
-    // Compile vertex shader
-    GLuint vsID = glCreateShader(GL_VERTEX_SHADER);
-    cout << "[Shader] Compiling VS '" << vs << "'" << endl;
-    string vsSource = utils::ReadEntireFile(vs);
-    const char* vsSourceData = vsSource.c_str();
-    glShaderSource(vsID, 1, &vsSourceData, NULL);
-    CompileShader(vsID);
-    glAttachShader(mProgram, vsID);
-
-    // Compile fragment shader
-    GLuint fsID = glCreateShader(GL_FRAGMENT_SHADER);
-    cout << "[Shader] Compiling FS '" << fs << "'" << endl;
-    string fsSource = utils::ReadEntireFile(fs);
-    const char* fsSourceData = fsSource.c_str();
-    glShaderSource(fsID, 1, &fsSourceData, NULL);
-    CompileShader(fsID);
+	GLuint vsID = CompileShader(VERTEX_SHADER, vs);
+	glAttachShader(mProgram, vsID);
+	GLuint fsID = CompileShader(FRAGMENT_SHADER, fs);
     glAttachShader(mProgram, fsID);
 
-    // Link program
-    glLinkProgram(mProgram);
+	LinkProgram();
 
-    // Check the result of the link process
-    GLint result = GL_FALSE;
-    glGetProgramiv(mProgram, GL_LINK_STATUS, &result);
-    if (result == GL_FALSE)
-    {
-        int infoLogLength;
-        glGetProgramiv(mProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
-        char* errorMessage = new char[infoLogLength];
-        glGetProgramInfoLog(mProgram, infoLogLength, NULL, errorMessage);
-        cout << "[Shader] Link Error:" << errorMessage;
-        delete[] errorMessage;
-        return;
-    }
-
-    // Delete shaders
+    // Delete shaders now that they've been linked
     glDeleteShader(vsID);
     glDeleteShader(fsID);
 }
 
 Shader::~Shader()
 {
-    if (mProgram != 0)
+    if (mProgram)
         glDeleteProgram(mProgram);
 }
 
@@ -61,31 +33,82 @@ void Shader::Bind()
     glUseProgram(mProgram);
 }
 
-void Shader::CompileShader(GLuint id)
+GLuint Shader::CompileShader(ShaderType type, const string& sourceFile)
 {
-    GLint result;
-    glCompileShader(id);
+	// Output to the log
+	cout << "[Shader] Compiling ";
+	switch (type)
+	{
+	case VERTEX_SHADER:
+		cout << "VS";
+		break;
 
-    // Check compilation result
-    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-    if (result == GL_FALSE)
-    {
-        int infoLogLength;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &infoLogLength);
+	case GEOMETRY_SHADER:
+		cout << "GS";
+		break;
 
-        char* errorMessage = new char[infoLogLength];
-        glGetShaderInfoLog(id, infoLogLength, NULL, errorMessage);
-        cout << "[Shader] Compile Error: " << errorMessage;
-        delete[] errorMessage;
-        
-        // TODO: Error
-    }
+	case FRAGMENT_SHADER:
+		cout << "FS";
+		break;
+
+	default:
+		cout << "<unknown type>";
+	}
+	cout << " '" << sourceFile << "'" << endl;
+
+	// Create shader
+	GLuint id = glCreateShader((GLuint)type);
+
+	// Read source code
+	string source = utils::ReadEntireFile(sourceFile);
+	const char* sourceFileData = source.c_str();
+	glShaderSource(id, 1, &sourceFileData, NULL);
+
+	// Compile
+	glCompileShader(id);
+
+	// Check compilation result
+	GLint result;
+	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+	if (result == GL_FALSE)
+	{
+		int infoLogLength;
+		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		char* errorMessage = new char[infoLogLength];
+		glGetShaderInfoLog(id, infoLogLength, NULL, errorMessage);
+		cout << "[Shader] [ERROR] Compile Error: " << errorMessage;
+		delete[] errorMessage;
+
+		// TODO: Error
+	}
+
+	return id;
+}
+
+void Shader::LinkProgram()
+{
+	// Link program
+	glLinkProgram(mProgram);
+
+	// Check the result of the link process
+	GLint result = GL_FALSE;
+	glGetProgramiv(mProgram, GL_LINK_STATUS, &result);
+	if (result == GL_FALSE)
+	{
+		int infoLogLength;
+		glGetProgramiv(mProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
+		char* errorMessage = new char[infoLogLength];
+		glGetProgramInfoLog(mProgram, infoLogLength, NULL, errorMessage);
+		cout << "[Shader] [ERROR] Link Error:" << errorMessage;
+		delete[] errorMessage;
+	}
 }
 
 GLint Shader::GetUniformLocation(const string& name)
 {
     GLint location = glGetUniformLocation(mProgram, name.c_str());
     if (location == -1)
-        cerr << "[Shader] Unable to find uniform " << name << endl;
+        cerr << "[Shader] [WARNING] Unable to find uniform '" << name << "'" << endl;
     return location;
 }

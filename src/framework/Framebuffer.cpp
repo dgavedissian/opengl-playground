@@ -39,7 +39,7 @@ Framebuffer::Framebuffer(uint width, uint height, uint textureCount)
     if (status != GL_FRAMEBUFFER_COMPLETE)
     {
         stringstream err;
-        err << "The framebuffer is not complete. Status: " << std::hex << status << endl;
+        err << "The framebuffer is not complete. Status: 0x" << std::hex << status << endl;
         throw std::runtime_error(err.str());
     }
 

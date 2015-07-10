@@ -75,44 +75,52 @@ void Framework::DestroyWindow()
 
 int Framework::Run(const string& windowTitle, uint width, uint height)
 {
-    if (CreateWindow(windowTitle, width, height) != 0)
-        return 1;
-    Startup();
+	try
+	{
+		if (CreateWindow(windowTitle, width, height) != 0)
+			return 1;
+		Startup();
 
-    // Main loop
-    SDL_Event e;
-    bool quit = false;
-    while (!quit)
-    {
-        // Handle message pump
-        while (SDL_PollEvent(&e) != 0)
-        {
-            switch (e.type)
-            {
-            case SDL_QUIT:
-                quit = true;
-                break;
+		// Main loop
+		SDL_Event e;
+		bool quit = false;
+		while (!quit)
+		{
+			// Handle message pump
+			while (SDL_PollEvent(&e) != 0)
+			{
+				switch (e.type)
+				{
+				case SDL_QUIT:
+					quit = true;
+					break;
 
-            case SDL_KEYDOWN:
-                OnKeyDown(e.key.keysym.sym);
-                break;
+				case SDL_KEYDOWN:
+					OnKeyDown(e.key.keysym.sym);
+					break;
 
-            default:
-                break;
-            }
-        }
+				default:
+					break;
+				}
+			}
 
-        // Render a frame
-        if (!Render())
-            quit = true;
+			// Render a frame
+			if (!Render())
+				quit = true;
 
-        // Swap the front and back buffer
-        SDL_GL_SwapWindow(mWindow);
-    }
+			// Swap the front and back buffer
+			SDL_GL_SwapWindow(mWindow);
+		}
 
-    Shutdown();
-    DestroyWindow();
-    return 0;
+		Shutdown();
+		DestroyWindow();
+		return 0;
+	}
+	catch (std::exception& e)
+	{
+		SDL_ShowSimpleMessageBox(0, "Runtime Error", e.what(), NULL);
+		return 1;
+	}
 }
 
 void Framework::PrintSDLError()

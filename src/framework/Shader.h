@@ -5,6 +5,13 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+enum ShaderType
+{
+	VERTEX_SHADER = GL_VERTEX_SHADER,
+	GEOMETRY_SHADER = GL_GEOMETRY_SHADER,
+	FRAGMENT_SHADER = GL_FRAGMENT_SHADER
+};
+
 class Shader
 {
 public:
@@ -20,7 +27,9 @@ public:
 private:
     GLuint mProgram;
     
-    void CompileShader(GLuint id);
+	GLuint CompileShader(ShaderType type, const string& sourceFile);
+	void LinkProgram();
+
     GLint GetUniformLocation(const string& name);
 
 };
