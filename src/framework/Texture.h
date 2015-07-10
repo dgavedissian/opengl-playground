@@ -12,11 +12,11 @@ public:
     Texture(uint width, uint height, GLuint format = GL_RGB, GLuint type = GL_UNSIGNED_BYTE);
     ~Texture();
 
-    void bind();
+    void Bind();
 
-    GLuint getID() const;
-    uint getWidth() const;
-    uint getHeight() const;
+    GLuint GetID() const;
+    uint GetWidth() const;
+    uint GetHeight() const;
 
 private:
     GLuint mTextureID;

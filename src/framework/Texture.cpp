@@ -55,22 +55,22 @@ Texture::~Texture()
     glDeleteTextures(1, &mTextureID);
 }
 
-void Texture::bind()
+void Texture::Bind()
 {
     glBindTexture(GL_TEXTURE_2D, mTextureID);
 }
 
-GLuint Texture::getID() const
+GLuint Texture::GetID() const
 {
     return mTextureID;
 }
 
-uint Texture::getWidth() const
+uint Texture::GetWidth() const
 {
     return mWidth;
 }
 
-uint Texture::getHeight() const
+uint Texture::GetHeight() const
 {
     return mHeight;
 }

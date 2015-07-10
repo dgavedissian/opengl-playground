@@ -11,19 +11,19 @@ struct VertexAttribute
     GLenum type;
 };
 
-class VertexBuffer
+class Mesh
 {
 public:
-    VertexBuffer(vector<GLfloat> vertexData, vector<VertexAttribute> layout);
-    VertexBuffer(vector<GLfloat> vertexData, vector<GLuint> elementData,
+    Mesh(vector<GLfloat> vertexData, vector<VertexAttribute> layout);
+    Mesh(vector<GLfloat> vertexData, vector<GLuint> elementData,
                  vector<VertexAttribute> layout);
-    ~VertexBuffer();
+    ~Mesh();
 
-    void bind();
-    void draw();
+    void Bind();
+    void Draw();
 
 private:
-    GLuint mVAO, mVBO, mEBO;
+    GLuint mVertexArrayObject, mVertexBufferObject, mElementBufferObject;
     uint mVertexCount;
 };
 

@@ -21,18 +21,18 @@ endif()
 set(SOURCE_FILES
     src/framework/Framebuffer.cpp
     src/framework/Framework.cpp
+    src/framework/Mesh.cpp
     src/framework/Shader.cpp
     src/framework/Texture.cpp
-    src/framework/VertexBuffer.cpp
     src/framework/Utils.cpp)
 
 set(HEADER_FILES
     src/framework/Common.h
     src/framework/Framebuffer.h
     src/framework/Framework.h
+    src/framework/Mesh.h
     src/framework/Shader.h
     src/framework/Texture.h
-    src/framework/VertexBuffer.h
     src/framework/Utils.h)
 
 # Main

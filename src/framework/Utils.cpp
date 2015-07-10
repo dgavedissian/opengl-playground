@@ -8,7 +8,7 @@
 namespace utils
 {
 
-string readFile(const string& file)
+string ReadEntireFile(const string& file)
 {
     string fileData;
 

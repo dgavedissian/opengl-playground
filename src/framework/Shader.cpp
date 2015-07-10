@@ -12,24 +12,23 @@ Shader::Shader(const string& vs, const string& fs)
 
     // Compile vertex shader
     GLuint vsID = glCreateShader(GL_VERTEX_SHADER);
-    cout << "Shader: Compiling VS '" << vs << "'" << endl;
-    string vsSource = utils::readFile(vs);
+    cout << "[Shader] Compiling VS '" << vs << "'" << endl;
+    string vsSource = utils::ReadEntireFile(vs);
     const char* vsSourceData = vsSource.c_str();
     glShaderSource(vsID, 1, &vsSourceData, NULL);
-    compileShader(vsID);
+    CompileShader(vsID);
     glAttachShader(mProgram, vsID);
 
     // Compile fragment shader
     GLuint fsID = glCreateShader(GL_FRAGMENT_SHADER);
-    cout << "Shader: Compiling FS '" << fs << "'" << endl;
-    string fsSource = utils::readFile(fs);
+    cout << "[Shader] Compiling FS '" << fs << "'" << endl;
+    string fsSource = utils::ReadEntireFile(fs);
     const char* fsSourceData = fsSource.c_str();
     glShaderSource(fsID, 1, &fsSourceData, NULL);
-    compileShader(fsID);
+    CompileShader(fsID);
     glAttachShader(mProgram, fsID);
 
     // Link program
-    cout << "Shader: Linking shader program" << endl;
     glLinkProgram(mProgram);
 
     // Check the result of the link process
@@ -41,7 +40,7 @@ Shader::Shader(const string& vs, const string& fs)
         glGetProgramiv(mProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
         char* errorMessage = new char[infoLogLength];
         glGetProgramInfoLog(mProgram, infoLogLength, NULL, errorMessage);
-        cout << "Error:" << errorMessage;
+        cout << "[Shader] Link Error:" << errorMessage;
         delete[] errorMessage;
         return;
     }
@@ -57,12 +56,12 @@ Shader::~Shader()
         glDeleteProgram(mProgram);
 }
 
-void Shader::bind()
+void Shader::Bind()
 {
     glUseProgram(mProgram);
 }
 
-void Shader::compileShader(GLuint id)
+void Shader::CompileShader(GLuint id)
 {
     GLint result;
     glCompileShader(id);
@@ -76,17 +75,17 @@ void Shader::compileShader(GLuint id)
 
         char* errorMessage = new char[infoLogLength];
         glGetShaderInfoLog(id, infoLogLength, NULL, errorMessage);
-        cout << "Error: " << errorMessage;
+        cout << "[Shader] Compile Error: " << errorMessage;
         delete[] errorMessage;
         
         // TODO: Error
     }
 }
 
-GLint Shader::getUniformLocation(const string& name)
+GLint Shader::GetUniformLocation(const string& name)
 {
     GLint location = glGetUniformLocation(mProgram, name.c_str());
     if (location == -1)
-        cerr << "Unable to find uniform " << name << endl;
+        cerr << "[Shader] Unable to find uniform " << name << endl;
     return location;
 }

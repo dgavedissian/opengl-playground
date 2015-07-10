@@ -11,25 +11,28 @@ public:
     Framework();
     ~Framework();
 
-    void printSDLError();
-    int createWindow(uint width, uint height);
-    void destroyWindow();
+	int CreateWindow(const string& windowTitle, uint width, uint height);
+    void DestroyWindow();
 
-    int run(uint width, uint height);
+    int Run(const string& windowTitle, uint width, uint height);
 
     // Application callbacks
-    virtual void setup() = 0;
-    virtual bool drawFrame() = 0;
-    virtual void cleanup() = 0;
-    virtual void onKeyDown(SDL_Keycode kc) = 0;
+	virtual void Startup() = 0;
+	virtual void Shutdown() = 0;
+    virtual bool Render() = 0;
+    virtual void OnKeyDown(SDL_Keycode kc) = 0;
 
 protected:
     glm::mat4 mViewMatrix;
-    glm::mat4 mProjMatrix;
+	glm::mat4 mProjMatrix;
+	uint mWindowWidth, mWindowHeight;
 
 private:
-    SDL_Window* mWindow;
-    SDL_GLContext mContext;
+	SDL_Window* mWindow;
+	SDL_GLContext mContext;
+
+private:
+	void PrintSDLError();
 };
 
 #endif /* FRAMEWORK_H */

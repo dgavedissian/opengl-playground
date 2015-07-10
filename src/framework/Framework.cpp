@@ -5,27 +5,22 @@
 #include "Common.h"
 #include "Framework.h"
 
-Framework::Framework() : mWindow(nullptr)
+Framework::Framework() : mWindow(nullptr), mWindowWidth(0), mWindowHeight(0)
 {
 }
 
 Framework::~Framework()
 {
     if (mWindow != nullptr)
-        destroyWindow();
+        DestroyWindow();
 }
 
-void Framework::printSDLError()
-{
-    cout << "SDL Error: " << SDL_GetError() << endl;
-}
-
-int Framework::createWindow(uint width, uint height)
+int Framework::CreateWindow(const string& windowTitle, uint width, uint height)
 {
     // Create a window
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        printSDLError();
+        PrintSDLError();
         return 1;
     }
 
@@ -34,13 +29,17 @@ int Framework::createWindow(uint width, uint height)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     // Create the window
-    mWindow = SDL_CreateWindow("Deferred Lighting", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+    mWindow = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
     if (mWindow == nullptr)
     {
-        printSDLError();
+        PrintSDLError();
         return 1;
-    }
+	}
+	
+	// Now the window exists without errors, update the member variables
+	mWindowWidth = width;
+	mWindowHeight = height;
 
     // Create the GL context
     mContext = SDL_GL_CreateContext(mWindow);
@@ -67,18 +66,18 @@ int Framework::createWindow(uint width, uint height)
     return 0;
 }
 
-void Framework::destroyWindow()
+void Framework::DestroyWindow()
 {
     assert(mWindow != nullptr);
     SDL_DestroyWindow(mWindow);
     SDL_Quit();
 }
 
-int Framework::run(uint width, uint height)
+int Framework::Run(const string& windowTitle, uint width, uint height)
 {
-    if (createWindow(width, height) != 0)
+    if (CreateWindow(windowTitle, width, height) != 0)
         return 1;
-    setup();
+    Startup();
 
     // Main loop
     SDL_Event e;
@@ -95,7 +94,7 @@ int Framework::run(uint width, uint height)
                 break;
 
             case SDL_KEYDOWN:
-                onKeyDown(e.key.keysym.sym);
+                OnKeyDown(e.key.keysym.sym);
                 break;
 
             default:
@@ -104,14 +103,19 @@ int Framework::run(uint width, uint height)
         }
 
         // Render a frame
-        if (!drawFrame())
+        if (!Render())
             quit = true;
 
-        // Swap the front and backbuffer
+        // Swap the front and back buffer
         SDL_GL_SwapWindow(mWindow);
     }
 
-    cleanup();
-    destroyWindow();
+    Shutdown();
+    DestroyWindow();
     return 0;
+}
+
+void Framework::PrintSDLError()
+{
+	cout << "SDL Error: " << SDL_GetError() << endl;
 }

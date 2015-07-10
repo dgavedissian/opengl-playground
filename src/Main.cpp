@@ -10,15 +10,16 @@
 #include "framework/Framebuffer.h"
 #include "framework/Shader.h"
 #include "framework/Texture.h"
-#include "framework/VertexBuffer.h"
+#include "framework/Mesh.h"
 
 #define WIDTH 1024
 #define HEIGHT 768
 
-vector<GLfloat> generateBox(float halfSize);
-pair<vector<GLfloat>, vector<GLuint>> generateLightSphere(float radius, int rings, int segments);
+Mesh* GenerateFullscreenQuad();
+Mesh* GenerateBox(float halfSize);
+Mesh* GenerateLightSphere(float radius, int rings, int segments);
 
-float timeSinceEpoch()
+float TimeSinceEpoch()
 {
 	return (float)clock() / (float)CLOCKS_PER_SEC;
 }
@@ -32,14 +33,14 @@ public:
           mAtten2(a2)
     {
         mShader = new Shader("media/light_pass.vs", "media/point_light_pass.fs");
-        mShader->bind();
-        mShader->setUniform("screenSize", glm::vec2(WIDTH, HEIGHT));
-        mShader->setUniform("gb0", 0);
-        mShader->setUniform("gb1", 1);
-        mShader->setUniform("gb2", 2);
-        mShader->setUniform("constant", a0);
-        mShader->setUniform("linear", a1);
-        mShader->setUniform("exponent", a2);
+        mShader->Bind();
+        mShader->SetUniform("screenSize", glm::vec2(WIDTH, HEIGHT));
+        mShader->SetUniform("gb0", 0);
+        mShader->SetUniform("gb1", 1);
+        mShader->SetUniform("gb2", 2);
+        mShader->SetUniform("constant", a0);
+        mShader->SetUniform("linear", a1);
+        mShader->SetUniform("exponent", a2);
        
         // Calculate range
         // Solve 'a2 * d^2 + a1 * d + a0 = 256' for d
@@ -62,8 +63,7 @@ public:
             range = (-a1 + sqrtf(a1 * a1 - 4.0f * a2 * (a0 - 256.0f))) / (2.0f * a2);
         }
 
-        pair<vector<GLfloat>, vector<GLuint>> data = generateLightSphere(range, 8, 8);
-        mVertices = new VertexBuffer(data.first, data.second, {{3, GL_FLOAT}});
+		mVertices = GenerateLightSphere(range, 8, 8);
     }
 
     ~PointLight()
@@ -72,28 +72,28 @@ public:
         delete mVertices;
     }
 
-    void setPosition(const glm::vec3& position)
+    void SetPosition(const glm::vec3& position)
     {
         mPosition = position;
         mWorld = glm::translate(glm::mat4(), position);
     }
 
-    void draw(const glm::mat4& view, const glm::mat4& proj)
+    void Draw(const glm::mat4& view, const glm::mat4& proj)
     {
         glm::mat4 wvp = proj * view * mWorld;
 
         // Bind shader
-        mShader->bind();
-        mShader->setUniform("worldViewProj", wvp);
-        mShader->setUniform("lightPos", mPosition);
+        mShader->Bind();
+        mShader->SetUniform("worldViewProj", wvp);
+        mShader->SetUniform("lightPos", mPosition);
         
         // Draw light
-        mVertices->bind();
-        mVertices->draw();
+        mVertices->Bind();
+        mVertices->Draw();
     }
 
 private:
-    VertexBuffer* mVertices;
+    Mesh* mVertices;
     Shader* mShader;
 
     float mAtten0;
@@ -109,12 +109,12 @@ class DeferredShading : public Framework
 {
 private:
     // Post process
-    Framebuffer* mFb;
-    VertexBuffer* mQuad;
+    Framebuffer* mGBuffer;
+    Mesh* mQuad;
     Shader* mPostShader;
 
     // Mesh
-    VertexBuffer* mMesh;
+    Mesh* mMesh;
     Texture* mTexture;
     Shader* mShader;
 
@@ -122,35 +122,25 @@ private:
     vector<PointLight*> lights;
 
 public:
-    virtual void setup()
+    virtual void Startup() override
     {
-        // Quad mesh data
-        vector<GLfloat> quadVertices =
-        {
-            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-            1.0f, -1.0f, 0.0f, 1.0f, 0.0f
-        };
-        vector<GLuint> quadElements = {0, 2, 1, 1, 2, 3};
-        vector<VertexAttribute> quadLayout = {{3, GL_FLOAT}, {2, GL_FLOAT}};
+		// Set up the g-buffer
+		mGBuffer = new Framebuffer(mWindowWidth, mWindowHeight, 3);
 
         // Set up post processing
-        mFb = new Framebuffer(WIDTH, HEIGHT, 3);
+		mQuad = GenerateFullscreenQuad();
         mPostShader = new Shader("media/quad.vs", "media/post.fs");
-        mQuad = new VertexBuffer(quadVertices, quadElements, quadLayout);
-        mPostShader->bind();
-        mPostShader->setUniform("gb0", 0);
-        mPostShader->setUniform("gb1", 1);
-        mPostShader->setUniform("gb2", 2);
+        mPostShader->Bind();
+        mPostShader->SetUniform("gb0", 0);
+        mPostShader->SetUniform("gb1", 1);
+        mPostShader->SetUniform("gb2", 2);
 
         // Set up scene
         mShader = new Shader("media/sample.vs", "media/sample.fs");
         mTexture = new Texture("media/wall.jpg");
 
-        // Vertices
-        vector<VertexAttribute> layout = {{3, GL_FLOAT}, {3, GL_FLOAT}, {2, GL_FLOAT}};
-        mMesh = new VertexBuffer(generateBox(0.5f), layout);
+        // Scene
+        mMesh = GenerateBox(0.5f);
 
         // Light
         for (int x = -1; x <= 1; x++)
@@ -160,12 +150,12 @@ public:
                     if (!(x == y == z))
                         continue; 
                     PointLight* light = new PointLight(0.75f, 0.0f, 1.0f);
-                    light->setPosition(glm::vec3(x, y, z) * 0.6f);
+                    light->SetPosition(glm::vec3(x, y, z) * 0.6f);
                     lights.push_back(light);
                 }
     }
 
-    virtual bool drawFrame()
+	virtual bool Render() override
     {
         mViewMatrix = glm::lookAt(
             glm::vec3(0.0f, 1.0f, 2.5f),
@@ -173,28 +163,28 @@ public:
             glm::vec3(0.0f, 1.0f, 0.0f));
         mProjMatrix = glm::perspective(45.0f, (float)WIDTH / HEIGHT, 0.1f, 10000.0f);
         
-        // Start rendering to the framebuffer
-        mFb->bind();
+        // Start rendering to the g-buffer
+        mGBuffer->Bind();
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         {
             // Set up the shader parameters
-            mShader->bind();
+            mShader->Bind();
             static glm::mat4 world;
 			world = glm::rotate(world, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
-            mShader->setUniform("worldViewProj", mProjMatrix * mViewMatrix * world);
-            mShader->setUniform("world", world);
+            mShader->SetUniform("worldViewProj", mProjMatrix * mViewMatrix * world);
+            mShader->SetUniform("world", world);
 
             // Draw the mesh
             glActiveTexture(GL_TEXTURE0);
-            mTexture->bind();
-            mMesh->bind();
-            mMesh->draw();
+            mTexture->Bind();
+            mMesh->Bind();
+            mMesh->Draw();
         }
         glDisable(GL_DEPTH_TEST);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // Draw lights
+		// Draw lights
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glEnable(GL_BLEND);
         glBlendEquation(GL_FUNC_ADD);
         glBlendFunc(GL_ONE, GL_ONE);
@@ -202,15 +192,15 @@ public:
         {
             // Bind G-Buffer
             glActiveTexture(GL_TEXTURE0);
-            mFb->getColourBuffer(0)->bind();
+            mGBuffer->GetColourBuffer(0)->Bind();
             glActiveTexture(GL_TEXTURE1);
-            mFb->getColourBuffer(1)->bind();
+            mGBuffer->GetColourBuffer(1)->Bind();
             glActiveTexture(GL_TEXTURE2);
-            mFb->getColourBuffer(2)->bind();
+            mGBuffer->GetColourBuffer(2)->Bind();
 
             // Draw point light
             for (auto i = lights.begin(); i != lights.end(); i++)
-                (*i)->draw(mViewMatrix, mProjMatrix);
+                (*i)->Draw(mViewMatrix, mProjMatrix);
         }
         glDisable(GL_BLEND);
 
@@ -225,7 +215,7 @@ public:
         return true;
     }
 
-    virtual void cleanup()
+	virtual void Shutdown() override
     {
         delete mShader;
         delete mTexture;
@@ -233,10 +223,10 @@ public:
 
         delete mPostShader;
         delete mQuad;
-        delete mFb;
+        delete mGBuffer;
     }
 
-    virtual void onKeyDown(SDL_Keycode kc)
+	virtual void OnKeyDown(SDL_Keycode kc) override
     {
         cout << "Key " << kc << " pressed!" << endl;
     }
@@ -244,12 +234,28 @@ public:
 
 int main(int argc, char** argv)
 {
-    return DeferredShading().run(WIDTH, HEIGHT);
+    return DeferredShading().Run("Deferred Shading Prototype", WIDTH, HEIGHT);
 }
 
-vector<GLfloat> generateBox(float halfSize)
+Mesh* GenerateFullscreenQuad()
 {
-    return {
+	vector<GLfloat> quadVertices =
+	{
+		// Position        | UV
+		-1.0f, 1.0f,  0.0f, 0.0f, 1.0f,
+		 1.0f, 1.0f,  0.0f, 1.0f, 1.0f,
+		-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+		 1.0f, -1.0f, 0.0f, 1.0f, 0.0f
+	};
+	vector<GLuint> quadElements = { 0, 2, 1, 1, 2, 3 };
+	vector<VertexAttribute> quadLayout = {{3, GL_FLOAT}, {2, GL_FLOAT}};
+	return new Mesh(quadVertices, quadElements, quadLayout);
+}
+
+Mesh* GenerateBox(float halfSize)
+{
+    return new Mesh({
+		// Position						| UVs		  | Normals
         -halfSize, -halfSize, -halfSize,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,
         halfSize, -halfSize, -halfSize,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f,
         halfSize,  halfSize, -halfSize,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,
@@ -291,10 +297,10 @@ vector<GLfloat> generateBox(float halfSize)
         halfSize,  halfSize,  halfSize,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f,
         -halfSize,  halfSize,  halfSize,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f,
         -halfSize,  halfSize, -halfSize,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f
-    };
+	}, {{3, GL_FLOAT}, {3, GL_FLOAT}, {2, GL_FLOAT}});
 }
 
-pair<vector<GLfloat>, vector<GLuint>> generateLightSphere(float radius, int rings, int segments)
+Mesh* GenerateLightSphere(float radius, int rings, int segments)
 {
     vector<GLfloat> vertexData;
     vector<GLuint> indexData;
@@ -333,5 +339,5 @@ pair<vector<GLfloat>, vector<GLuint>> generateLightSphere(float radius, int ring
         }
     }
 
-    return make_pair(vertexData, indexData);
+	return new Mesh(vertexData, indexData, {{3, GL_FLOAT}});
 }

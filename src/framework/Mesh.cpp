@@ -3,21 +3,22 @@
  * Copyright (c) David Avedissian 2014-2015
  */
 #include "Common.h"
-#include "VertexBuffer.h"
+#include "Mesh.h"
 
-VertexBuffer::VertexBuffer(vector<GLfloat> vertexData, vector<VertexAttribute> layout)
-    : mVAO(0),
-      mVBO(0),
-      mEBO(0),
+Mesh::Mesh(vector<GLfloat> vertexData, vector<VertexAttribute> layout)
+    : mVertexArrayObject(0),
+      mVertexBufferObject(0),
+      mElementBufferObject(0),
       mVertexCount(0)
 {
-    glGenVertexArrays(1, &mVAO);
-    glBindVertexArray(mVAO);
+    glGenVertexArrays(1, &mVertexArrayObject);
+    glBindVertexArray(mVertexArrayObject);
 
     // Generate vertex buffer
-    glGenBuffers(1, &mVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
+    glGenBuffers(1, &mVertexBufferObject);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferObject);
+    glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(),
+		GL_STATIC_DRAW);
 
     // Calculate vertex size
     uint vertexSize = 0;
@@ -40,25 +41,27 @@ VertexBuffer::VertexBuffer(vector<GLfloat> vertexData, vector<VertexAttribute> l
     }
 }
 
-VertexBuffer::VertexBuffer(vector<GLfloat> vertexData, vector<GLuint> elementData,
+Mesh::Mesh(vector<GLfloat> vertexData, vector<GLuint> elementData,
                            vector<VertexAttribute> layout)
-    : mVAO(0),
-      mVBO(0),
-      mEBO(0),
+    : mVertexArrayObject(0),
+      mVertexBufferObject(0),
+      mElementBufferObject(0),
       mVertexCount(elementData.size())
 {
-    glGenVertexArrays(1, &mVAO);
-    glBindVertexArray(mVAO);
+    glGenVertexArrays(1, &mVertexArrayObject);
+    glBindVertexArray(mVertexArrayObject);
 
     // Generate vertex buffer
-    glGenBuffers(1, &mVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
+    glGenBuffers(1, &mVertexBufferObject);
+    glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferObject);
+    glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(),
+		GL_STATIC_DRAW);
 
     // Generate element buffer
-    glGenBuffers(1, &mEBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementData.size() * sizeof(GLuint), elementData.data(), GL_STATIC_DRAW);
+    glGenBuffers(1, &mElementBufferObject);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mElementBufferObject);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementData.size() * sizeof(GLuint), elementData.data(),
+		GL_STATIC_DRAW);
 
     // Calculate vertex size
     uint vertexSize = 0;
@@ -78,18 +81,18 @@ VertexBuffer::VertexBuffer(vector<GLfloat> vertexData, vector<GLuint> elementDat
     }
 }
 
-VertexBuffer::~VertexBuffer()
+Mesh::~Mesh()
 {
 }
 
-void VertexBuffer::bind()
+void Mesh::Bind()
 {
-    glBindVertexArray(mVAO);
+    glBindVertexArray(mVertexArrayObject);
 }
 
-void VertexBuffer::draw()
+void Mesh::Draw()
 {
-    if (mEBO != 0)
+    if (mElementBufferObject != 0)
     {
         glDrawElements(GL_TRIANGLES, mVertexCount, GL_UNSIGNED_INT, 0);
     }

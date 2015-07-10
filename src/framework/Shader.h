@@ -12,57 +12,57 @@ public:
     ~Shader();
     
     // Bind this shader
-    void bind();
+    void Bind();
 
     // Set uniform parameters
-    template <class T> void setUniform(const string& name, const T& value);
+    template <class T> void SetUniform(const string& name, const T& value);
 
 private:
     GLuint mProgram;
     
-    void compileShader(GLuint id);
-    GLint getUniformLocation(const string& name);
+    void CompileShader(GLuint id);
+    GLint GetUniformLocation(const string& name);
 
 };
 
-template <> inline void Shader::setUniform(const string& name, const int& value)
+template <> inline void Shader::SetUniform(const string& name, const int& value)
 {
-    glUniform1i(getUniformLocation(name), value);
+    glUniform1i(GetUniformLocation(name), value);
 }
 
-template <> inline void Shader::setUniform(const string& name, const float& value)
+template <> inline void Shader::SetUniform(const string& name, const float& value)
 {
-    glUniform1f(getUniformLocation(name), value);
+    glUniform1f(GetUniformLocation(name), value);
 }
 
-template <> inline void Shader::setUniform(const string& name, const glm::vec2& value)
+template <> inline void Shader::SetUniform(const string& name, const glm::vec2& value)
 {
-    glUniform2f(getUniformLocation(name), value.x, value.y);
+    glUniform2f(GetUniformLocation(name), value.x, value.y);
 }
 
-template <> inline void Shader::setUniform(const string& name, const glm::vec3& value)
+template <> inline void Shader::SetUniform(const string& name, const glm::vec3& value)
 {
-    glUniform3f(getUniformLocation(name), value.x, value.y, value.z);
+    glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
 }
 
-template <> inline void Shader::setUniform(const string& name, const glm::vec4& value)
+template <> inline void Shader::SetUniform(const string& name, const glm::vec4& value)
 {
-    glUniform4f(getUniformLocation(name), value.x, value.y, value.z, value.w);
+    glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.w);
 }
 
-template <> inline void Shader::setUniform(const string& name, const glm::mat2& value)
+template <> inline void Shader::SetUniform(const string& name, const glm::mat2& value)
 {
-    glUniformMatrix2fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
+    glUniformMatrix2fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-template <> inline void Shader::setUniform(const string& name, const glm::mat3& value)
+template <> inline void Shader::SetUniform(const string& name, const glm::mat3& value)
 {
-    glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
+    glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-template <> inline void Shader::setUniform(const string& name, const glm::mat4& value)
+template <> inline void Shader::SetUniform(const string& name, const glm::mat4& value)
 {
-    glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
+    glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
 #endif /* SHADER_H */

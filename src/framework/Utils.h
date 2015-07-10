@@ -5,11 +5,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-namespace utils
-{
+namespace utils {
 
 // Read a file entirely into a string buffer
-string readFile(const string& file);
+string ReadEntireFile(const string& file);
 
 }
 

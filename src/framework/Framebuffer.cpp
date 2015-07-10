@@ -18,7 +18,7 @@ Framebuffer::Framebuffer(uint width, uint height, uint textureCount)
     {
         Texture* texture = new Texture(width, height, GL_RGB32F, GL_FLOAT);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D,
-                               texture->getID(), 0);
+                               texture->GetID(), 0);
         mTextures.emplace_back(texture);
     }
 
@@ -39,7 +39,7 @@ Framebuffer::Framebuffer(uint width, uint height, uint textureCount)
     if (status != GL_FRAMEBUFFER_COMPLETE)
     {
         stringstream err;
-        err << "The framebuffer is not complete. Status: " << status << endl;
+        err << "The framebuffer is not complete. Status: " << std::hex << status << endl;
         throw std::runtime_error(err.str());
     }
 
@@ -53,12 +53,12 @@ Framebuffer::~Framebuffer()
     glDeleteFramebuffers(1, &mFramebuffer);
 }
 
-void Framebuffer::bind()
+void Framebuffer::Bind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
 }
 
-Texture* Framebuffer::getColourBuffer(uint i)
+Texture* Framebuffer::GetColourBuffer(uint i)
 {
     return mTextures[i].get();
 }
