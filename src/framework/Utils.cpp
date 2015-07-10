@@ -2,8 +2,8 @@
  * GL Framework
  * Copyright (c) David Avedissian 2014-2015
  */
-#include "common.h"
-#include "utils.h"
+#include "Common.h"
+#include "Utils.h"
 
 namespace utils
 {

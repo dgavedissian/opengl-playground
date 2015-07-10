@@ -2,9 +2,9 @@
  * GL Framework
  * Copyright (c) David Avedissian 2014-2015
  */
-#include "common.h"
-#include "texture.h"
-#include "framebuffer.h"
+#include "Common.h"
+#include "Texture.h"
+#include "Framebuffer.h"
 
 Framebuffer::Framebuffer(uint width, uint height, uint textureCount)
     : mWidth(width),

@@ -2,8 +2,8 @@
  * GL Framework
  * Copyright (c) David Avedissian 2014-2015
  */
-#include "common.h"
-#include "vertexbuffer.h"
+#include "Common.h"
+#include "VertexBuffer.h"
 
 VertexBuffer::VertexBuffer(vector<GLfloat> vertexData, vector<VertexAttribute> layout)
     : mVAO(0),

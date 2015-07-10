@@ -19,33 +19,33 @@ endif()
 
 # Framework
 set(SOURCE_FILES
-    src/framework/framebuffer.cpp
-    src/framework/framework.cpp
-    src/framework/shader.cpp
-    src/framework/texture.cpp
-    src/framework/utils.cpp
-    src/framework/vertexbuffer.cpp)
+    src/framework/Framebuffer.cpp
+    src/framework/Framework.cpp
+    src/framework/Shader.cpp
+    src/framework/Texture.cpp
+    src/framework/VertexBuffer.cpp
+    src/framework/Utils.cpp)
 
 set(HEADER_FILES
-    src/framework/common.h
-    src/framework/framebuffer.h
-    src/framework/framework.h
-    src/framework/shader.h
-    src/framework/texture.h
-    src/framework/utils.h
-    src/framework/vertexbuffer.h)
+    src/framework/Common.h
+    src/framework/Framebuffer.h
+    src/framework/Framework.h
+    src/framework/Shader.h
+    src/framework/Texture.h
+    src/framework/VertexBuffer.h
+    src/framework/Utils.h)
 
 # Main
-set(SOURCE_FILES ${SOURCE_FILES} src/main.cpp)
+set(SOURCE_FILES ${SOURCE_FILES} src/Main.cpp)
 set(HEADER_FILES ${HEADER_FILES})
 
 # Executable
 include_directories(${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${SDL2_INCLUDE_DIR} ${FREEIMAGE_INCLUDE_DIRS})
-add_executable(deferred ${SOURCE_FILES} ${HEADER_FILES} WIN32)
-target_link_libraries(deferred ${OPENGL_LIBRARIES} ${SDL2_LIBRARIES} ${FREEIMAGE_LIBRARIES})
-create_vcproj_userfile(deferred)
+add_executable(Deferred ${SOURCE_FILES} ${HEADER_FILES} WIN32)
+target_link_libraries(Deferred ${OPENGL_LIBRARIES} ${SDL2_LIBRARIES} ${FREEIMAGE_LIBRARIES})
+create_vcproj_userfile(Deferred)
 mirror_physical_directories(${SOURCE_FILES} ${HEADER_FILES})
 if(NOT APPLE)
-    target_link_libraries(deferred ${GLEW_LIBRARY})
+    target_link_libraries(Deferred ${GLEW_LIBRARY})
 endif()
 

@@ -2,8 +2,8 @@
  * GL Framework
  * Copyright (c) David Avedissian 2014-2015
  */
-#include "common.h"
-#include "texture.h"
+#include "Common.h"
+#include "Texture.h"
 
 #include <FreeImage.h>
 

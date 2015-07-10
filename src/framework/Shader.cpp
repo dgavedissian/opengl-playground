@@ -2,9 +2,9 @@
  * GL Framework
  * Copyright (c) David Avedissian 2014-2015
  */
-#include "common.h"
-#include "utils.h"
-#include "shader.h"
+#include "Common.h"
+#include "Utils.h"
+#include "Shader.h"
 
 Shader::Shader(const string& vs, const string& fs)
 {

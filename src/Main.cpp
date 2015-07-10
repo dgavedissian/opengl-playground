@@ -4,13 +4,13 @@
  */
 #include <ctime>
 
-#include "framework/common.h"
-#include "framework/framework.h"
+#include "framework/Common.h"
+#include "framework/Framework.h"
 
-#include "framework/framebuffer.h"
-#include "framework/shader.h"
-#include "framework/texture.h"
-#include "framework/vertexbuffer.h"
+#include "framework/Framebuffer.h"
+#include "framework/Shader.h"
+#include "framework/Texture.h"
+#include "framework/VertexBuffer.h"
 
 #define WIDTH 1024
 #define HEIGHT 768
@@ -181,7 +181,7 @@ public:
             // Set up the shader parameters
             mShader->bind();
             static glm::mat4 world;
-			world = glm::rotate(world, 0.05f, glm::vec3(0.0f, 1.0f, 0.0f));
+			world = glm::rotate(world, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
             mShader->setUniform("worldViewProj", mProjMatrix * mViewMatrix * world);
             mShader->setUniform("world", world);
 
