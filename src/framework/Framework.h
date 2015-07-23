@@ -5,6 +5,11 @@
 #ifndef FRAMEWORK_H
 #define FRAMEWORK_H
 
+// This macro conflicts with the framework
+#ifdef CreateWindow
+#   undef CreateWindow
+#endif
+
 class Framework
 {
 public:

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(DeferredShading)
+project(GLPrototypes)
 
 # Module path
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
@@ -12,21 +12,17 @@ enable_maximum_warnings()
 # Dependencies
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
-find_package(FreeImage REQUIRED)
-if(NOT APPLE)
-    find_package(GLEW REQUIRED)
-endif()
 
 # Framework
-set(SOURCE_FILES
+set(CPP_FILES
+    src/framework/gl3w.c
     src/framework/Framebuffer.cpp
     src/framework/Framework.cpp
     src/framework/Mesh.cpp
     src/framework/Shader.cpp
     src/framework/Texture.cpp
     src/framework/Utils.cpp)
-
-set(HEADER_FILES
+set(H_FILES
     src/framework/Common.h
     src/framework/Framebuffer.h
     src/framework/Framework.h
@@ -34,18 +30,23 @@ set(HEADER_FILES
     src/framework/Shader.h
     src/framework/Texture.h
     src/framework/Utils.h)
+set(FRAMEWORK_FILES ${CPP_FILES} ${H_FILES})
 
-# Main
-set(SOURCE_FILES ${SOURCE_FILES} src/Main.cpp)
-set(HEADER_FILES ${HEADER_FILES})
+# Framework include dirs
+include_directories(src/framework)
+include_directories(${OPENGL_INCLUDE_DIR} ${SDL2_INCLUDE_DIR})
 
-# Executable
-include_directories(${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR} ${SDL2_INCLUDE_DIR} ${FREEIMAGE_INCLUDE_DIRS})
-add_executable(Deferred ${SOURCE_FILES} ${HEADER_FILES} WIN32)
-target_link_libraries(Deferred ${OPENGL_LIBRARIES} ${SDL2_LIBRARIES} ${FREEIMAGE_LIBRARIES})
-create_vcproj_userfile(Deferred)
-mirror_physical_directories(${SOURCE_FILES} ${HEADER_FILES})
-if(NOT APPLE)
-    target_link_libraries(Deferred ${GLEW_LIBRARY})
-endif()
+# Add a new prototype
+macro(add_prototype NAME)
+    add_executable(${NAME} ${FRAMEWORK_FILES} ${SOURCE_FILES})
+    target_link_libraries(${NAME} ${OPENGL_LIBRARIES} ${SDL2_LIBRARIES})
+    create_vcproj_userfile(${NAME})
+    mirror_physical_directories(${FRAMEWORK_FILES} ${SOURCE_FILES})
+endmacro()
 
+# Deferred Shading
+set(SOURCE_FILES src/Main.cpp)
+add_prototype(DeferredShading)
+
+# PBS
+## TODO

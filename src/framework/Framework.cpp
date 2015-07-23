@@ -45,22 +45,17 @@ int Framework::CreateWindow(const string& windowTitle, uint width, uint height)
     mContext = SDL_GL_CreateContext(mWindow);
     SDL_GL_SetSwapInterval(1);
 
-    // Set up GLEW - OS X doesn't require glew: http://stackoverflow.com/a/11213354
-#ifndef __APPLE__
-    glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
-    if (err != GLEW_OK)
+    // Initialise gl3w
+    if (gl3wInit())
     {
-        cout << "GLEW Error: " << glewGetErrorString(err);
+        cerr << "[ERROR] Failed to initialise OpenGL" << endl;
         return 1;
     }
-#endif
 
-    // get version info
-    const GLubyte* renderer = glGetString(GL_RENDERER);
-    const GLubyte* version = glGetString(GL_VERSION);
-    cout << "Renderer: " << renderer << endl;
-    cout << "OpenGL version supported " << version << endl;
+    // Get version info
+    cout << "[info] Renderer: " << glGetString(GL_RENDERER) << endl;
+    cout << "[info] OpenGL " << glGetString(GL_VERSION)
+         << ", GLSL " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
 
     // Everything ok
     return 0;
@@ -125,5 +120,5 @@ int Framework::Run(const string& windowTitle, uint width, uint height)
 
 void Framework::PrintSDLError()
 {
-	cout << "SDL Error: " << SDL_GetError() << endl;
+	cerr << "SDL Error: " << SDL_GetError() << endl;
 }
