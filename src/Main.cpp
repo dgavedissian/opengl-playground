@@ -177,7 +177,7 @@ public:
 
             // Draw the mesh
             glActiveTexture(GL_TEXTURE0);
-            mTexture->Bind();
+            mTexture->Bind(0);
             mMesh->Bind();
             mMesh->Draw();
         }
@@ -191,12 +191,9 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
         {
             // Bind G-Buffer
-            glActiveTexture(GL_TEXTURE0);
-            mGBuffer->GetColourBuffer(0)->Bind();
-            glActiveTexture(GL_TEXTURE1);
-            mGBuffer->GetColourBuffer(1)->Bind();
-            glActiveTexture(GL_TEXTURE2);
-            mGBuffer->GetColourBuffer(2)->Bind();
+            mGBuffer->GetColourBuffer(0)->Bind(0);
+            mGBuffer->GetColourBuffer(1)->Bind(1);
+            mGBuffer->GetColourBuffer(2)->Bind(2);
 
             // Draw point light
             for (auto i = lights.begin(); i != lights.end(); i++)
@@ -208,7 +205,7 @@ public:
         GLuint err = glGetError();
         if (err != 0)
         {
-            cerr << "glGetError() returned " << err << endl;
+            cerr << "[ERROR] glGetError() returned " << err << endl;
             return false;
         }
 
@@ -232,7 +229,7 @@ public:
     }
 };
 
-int main(int argc, char** argv)
+int main(int, char**)
 {
     return DeferredShading().Run("Deferred Shading Prototype", WIDTH, HEIGHT);
 }
@@ -306,8 +303,8 @@ Mesh* GenerateLightSphere(float radius, int rings, int segments)
     vector<GLuint> indexData;
 
     // Generate the group of rings for the sphere
-    float deltaRingAngle = M_PI / rings;
-    float deltaSegAngle = 2.0f * M_PI / segments;
+    float deltaRingAngle = (float)M_PI / rings;
+    float deltaSegAngle = 2.0f * (float)M_PI / segments;
     unsigned short vertexIndex = 0;
     for (int ring = 0; ring <= rings; ring++)
     {
