@@ -22,6 +22,7 @@ set(EXTERNAL_CPP_FILES
     src/framework/external/gl3w.c)
 set(CPP_FILES
     src/framework/Application.cpp
+    src/framework/CameraMan.cpp
     src/framework/Framebuffer.cpp
     src/framework/Mesh.cpp
     src/framework/Shader.cpp
@@ -29,6 +30,7 @@ set(CPP_FILES
     src/framework/Utils.cpp)
 set(H_FILES
     src/framework/Application.h
+    src/framework/CameraMan.h
     src/framework/Common.h
     src/framework/Framebuffer.h
     src/framework/Mesh.h

@@ -59,7 +59,7 @@ int Application::CreateWindow(const string& windowTitle, uint width, uint height
     INFO << "OpenGL " << glGetString(GL_VERSION)
          << ", GLSL " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
 
-    // Everything ok
+    // Everything is ok
     return 0;
 }
 
@@ -90,11 +90,27 @@ int Application::Run(const string& windowTitle, uint width, uint height)
 				{
 				case SDL_QUIT:
 					quit = true;
-					break;
+                    break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                    OnMouseDown(e.button.button);
+                    break;
+
+                case SDL_MOUSEBUTTONUP:
+                    OnMouseUp(e.button.button);
+                    break;
+
+                case SDL_MOUSEMOTION:
+                    OnMouseMove(glm::vec2(e.motion.xrel, e.motion.yrel));
+                    break;
 
 				case SDL_KEYDOWN:
 					OnKeyDown(e.key.keysym.sym);
 					break;
+
+                case SDL_KEYUP:
+                    OnKeyUp(e.key.keysym.sym);
+                    break;
 
 				default:
 					break;
@@ -115,9 +131,35 @@ int Application::Run(const string& windowTitle, uint width, uint height)
 	}
 	catch (std::exception& e)
 	{
+        ERROR << "Runtime Exception: " << e.what() << endl;
 		SDL_ShowSimpleMessageBox(0, "Runtime Error", e.what(), NULL);
 		return 1;
 	}
+}
+
+void Application::OnMouseDown(int button)
+{
+    mCameraMan.OnMouseDown(button);
+}
+
+void Application::OnMouseUp(int button)
+{
+    mCameraMan.OnMouseUp(button);
+}
+
+void Application::OnMouseMove(const glm::vec2& offset)
+{
+    mCameraMan.OnMouseMove(offset);
+}
+
+void Application::OnKeyDown(SDL_Keycode kc)
+{
+    mCameraMan.OnKeyDown(kc);
+}
+
+void Application::OnKeyUp(SDL_Keycode kc)
+{
+    mCameraMan.OnKeyUp(kc);
 }
 
 void Application::PrintSDLError()

@@ -123,6 +123,9 @@ private:
 public:
     virtual void Startup() override
     {
+        mCameraMan.SetPosition(glm::vec3(0.0f, 1.0f, 2.5f));
+        mProjMatrix = glm::perspective(45.0f, (float)WIDTH / HEIGHT, 0.1f, 10000.0f);
+
 		// Set up the g-buffer
 		mGBuffer = new Framebuffer(mWindowWidth, mWindowHeight, 3);
 
@@ -160,11 +163,8 @@ public:
 
 	virtual bool Render() override
     {
-        mViewMatrix = glm::lookAt(
-            glm::vec3(0.0f, 1.0f, 2.5f),
-            glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec3(0.0f, 1.0f, 0.0f));
-        mProjMatrix = glm::perspective(45.0f, (float)WIDTH / HEIGHT, 0.1f, 10000.0f);
+        // Update the camera
+        mCameraMan.Update(0.0f);
 
         // Start rendering to the g-buffer
         mGBuffer->Bind();
@@ -175,7 +175,7 @@ public:
             mShader->Bind();
             static glm::mat4 world;
 			world = glm::rotate(world, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
-            mShader->SetUniform("worldViewProj", mProjMatrix * mViewMatrix * world);
+            mShader->SetUniform("worldViewProj", mProjMatrix * mCameraMan.GetViewMatrix() * world);
             mShader->SetUniform("world", world);
 
             // Draw the mesh
@@ -200,7 +200,7 @@ public:
 
             // Draw point light
             for (auto i = lights.begin(); i != lights.end(); i++)
-                (*i)->Draw(mViewMatrix, mProjMatrix);
+                (*i)->Draw(mCameraMan.GetViewMatrix(), mProjMatrix);
         }
         glDisable(GL_BLEND);
 
@@ -224,11 +224,6 @@ public:
         delete mPostShader;
         delete mQuad;
         delete mGBuffer;
-    }
-
-	virtual void OnKeyDown(SDL_Keycode kc) override
-    {
-        cout << "Key " << kc << " pressed!" << endl;
     }
 };
 
