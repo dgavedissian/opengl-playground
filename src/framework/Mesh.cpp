@@ -18,7 +18,7 @@ Mesh::Mesh(vector<GLfloat> vertexData, vector<VertexAttribute> layout)
     glGenBuffers(1, &mVertexBufferObject);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferObject);
     glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(),
-		GL_STATIC_DRAW);
+        GL_STATIC_DRAW);
 
     // Calculate vertex size
     uint vertexSize = 0;

@@ -2,19 +2,19 @@
  * GL Framework
  * Copyright (c) David Avedissian 2014-2015
  */
-#ifndef FRAMEWORK_H
-#define FRAMEWORK_H
+#pragma once
 
-// This macro conflicts with the framework
-#ifdef CreateWindow
-#   undef CreateWindow
-#endif
+#define DEFINE_MAIN_FUNCTION(CLASS) \
+    extern "C" int main(int, char**) \
+    { \
+        return CLASS().Run(#CLASS, WIDTH, HEIGHT); \
+    }
 
-class Framework
+class Application
 {
 public:
-    Framework();
-    ~Framework();
+    Application();
+    ~Application();
 
 	int CreateWindow(const string& windowTitle, uint width, uint height);
     void DestroyWindow();
@@ -39,5 +39,3 @@ private:
 private:
 	void PrintSDLError();
 };
-
-#endif /* FRAMEWORK_H */

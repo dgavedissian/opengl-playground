@@ -2,8 +2,7 @@
  * GL Framework
  * Copyright (c) David Avedissian 2014-2015
  */
-#ifndef VERTEXBUFFER_H
-#define VERTEXBUFFER_H
+#pragma once
 
 struct VertexAttribute
 {
@@ -26,5 +25,3 @@ private:
     GLuint mVertexArrayObject, mVertexBufferObject, mElementBufferObject;
     uint mVertexCount;
 };
-
-#endif /* VERTEXBUFFER_H */

@@ -5,8 +5,7 @@
 #include <ctime>
 
 #include "framework/Common.h"
-#include "framework/Framework.h"
-
+#include "framework/Application.h"
 #include "framework/Framebuffer.h"
 #include "framework/Shader.h"
 #include "framework/Texture.h"
@@ -41,7 +40,7 @@ public:
         mShader->SetUniform("constant", a0);
         mShader->SetUniform("linear", a1);
         mShader->SetUniform("exponent", a2);
-       
+
         // Calculate range
         // Solve 'a2 * d^2 + a1 * d + a0 = 256' for d
         // 256 is the number of distinct light levels in an 8 bit component (2^8)
@@ -86,7 +85,7 @@ public:
         mShader->Bind();
         mShader->SetUniform("worldViewProj", wvp);
         mShader->SetUniform("lightPos", mPosition);
-        
+
         // Draw light
         mVertices->Bind();
         mVertices->Draw();
@@ -105,7 +104,7 @@ private:
 
 };
 
-class DeferredShading : public Framework
+class DeferredShadingApp : public Application
 {
 private:
     // Post process
@@ -142,17 +141,21 @@ public:
         // Scene
         mMesh = GenerateBox(0.5f);
 
-        // Light
+        // Lights
         for (int x = -1; x <= 1; x++)
+        {
             for (int y = -1; y <= 1; y++)
+            {
                 for (int z = -1; z <= 1; z++)
                 {
                     if (!(x == y == z))
-                        continue; 
+                        continue;
                     PointLight* light = new PointLight(0.75f, 0.0f, 1.0f);
                     light->SetPosition(glm::vec3(x, y, z) * 0.6f);
                     lights.push_back(light);
                 }
+            }
+        }
     }
 
 	virtual bool Render() override
@@ -162,7 +165,7 @@ public:
             glm::vec3(0.0f, 0.0f, 0.0f),
             glm::vec3(0.0f, 1.0f, 0.0f));
         mProjMatrix = glm::perspective(45.0f, (float)WIDTH / HEIGHT, 0.1f, 10000.0f);
-        
+
         // Start rendering to the g-buffer
         mGBuffer->Bind();
         glEnable(GL_DEPTH_TEST);
@@ -205,7 +208,7 @@ public:
         GLuint err = glGetError();
         if (err != 0)
         {
-            cerr << "[ERROR] glGetError() returned " << err << endl;
+            ERROR << "glGetError() returned " << err << endl;
             return false;
         }
 
@@ -229,10 +232,7 @@ public:
     }
 };
 
-int main(int, char**)
-{
-    return DeferredShading().Run("Deferred Shading Prototype", WIDTH, HEIGHT);
-}
+DEFINE_MAIN_FUNCTION(DeferredShadingApp)
 
 Mesh* GenerateFullscreenQuad()
 {
@@ -321,7 +321,7 @@ Mesh* GenerateLightSphere(float radius, int rings, int segments)
             vertexData.push_back(x0);
             vertexData.push_back(y0);
             vertexData.push_back(z0);
-            
+
             if (ring != rings)
             {
                 // each vertex (except the last) has six indices pointing to it

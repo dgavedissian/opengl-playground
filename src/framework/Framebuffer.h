@@ -2,8 +2,7 @@
  * GL Framework
  * Copyright (c) David Avedissian 2014-2015
  */
-#ifndef FRAMEBUFFER_H
-#define FRAMEBUFFER_H
+#pragma once
 
 class Texture;
 
@@ -24,5 +23,3 @@ private:
     GLuint mFramebuffer;
     GLuint mDepthBuffer;
 };
-
-#endif /* FRAMEBUFFER_H */

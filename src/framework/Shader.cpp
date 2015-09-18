@@ -36,7 +36,7 @@ void Shader::Bind()
 GLuint Shader::CompileShader(ShaderType type, const string& sourceFile)
 {
 	// Output to the log
-	cout << "[Shader] Compiling ";
+	INFO << "Compiling Shader ";
 	switch (type)
 	{
 	case VERTEX_SHADER:
@@ -77,7 +77,7 @@ GLuint Shader::CompileShader(ShaderType type, const string& sourceFile)
 
 		char* errorMessage = new char[infoLogLength];
 		glGetShaderInfoLog(id, infoLogLength, NULL, errorMessage);
-		cout << "[Shader] [ERROR] Compile Error: " << errorMessage;
+		ERROR << "Shader Compile Error: " << errorMessage;
 		delete[] errorMessage;
 
 		// TODO: Error
@@ -100,7 +100,7 @@ void Shader::LinkProgram()
 		glGetProgramiv(mProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
 		char* errorMessage = new char[infoLogLength];
 		glGetProgramInfoLog(mProgram, infoLogLength, NULL, errorMessage);
-		cout << "[Shader] [ERROR] Link Error:" << errorMessage;
+		ERROR << "Shader Link Error:" << errorMessage;
 		delete[] errorMessage;
 	}
 }
@@ -109,6 +109,6 @@ GLint Shader::GetUniformLocation(const string& name)
 {
     GLint location = glGetUniformLocation(mProgram, name.c_str());
     if (location == -1)
-        cerr << "[Shader] [WARNING] Unable to find uniform '" << name << "'" << endl;
+        WARNING << "Unable to find uniform '" << name << "'" << endl;
     return location;
 }

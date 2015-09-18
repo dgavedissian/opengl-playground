@@ -3,20 +3,22 @@
  * Copyright (c) David Avedissian 2014-2015
  */
 #include "Common.h"
-#include "Framework.h"
+#include "Application.h"
 
-Framework::Framework() : mWindow(nullptr), mWindowWidth(0), mWindowHeight(0)
+Application::Application() : mWindow(nullptr), mWindowWidth(0), mWindowHeight(0)
 {
 }
 
-Framework::~Framework()
+Application::~Application()
 {
     if (mWindow != nullptr)
         DestroyWindow();
 }
 
-int Framework::CreateWindow(const string& windowTitle, uint width, uint height)
+int Application::CreateWindow(const string& windowTitle, uint width, uint height)
 {
+    INFO << "Starting " << windowTitle << endl;
+
     // Create a window
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -36,7 +38,7 @@ int Framework::CreateWindow(const string& windowTitle, uint width, uint height)
         PrintSDLError();
         return 1;
 	}
-	
+
 	// Now the window exists without errors, update the member variables
 	mWindowWidth = width;
 	mWindowHeight = height;
@@ -48,27 +50,27 @@ int Framework::CreateWindow(const string& windowTitle, uint width, uint height)
     // Initialise gl3w
     if (gl3wInit())
     {
-        cerr << "[ERROR] Failed to initialise OpenGL" << endl;
+        ERROR << "Failed to initialise OpenGL" << endl;
         return 1;
     }
 
     // Get version info
-    cout << "[info] Renderer: " << glGetString(GL_RENDERER) << endl;
-    cout << "[info] OpenGL " << glGetString(GL_VERSION)
+    INFO << "Renderer: " << glGetString(GL_RENDERER) << endl;
+    INFO << "OpenGL " << glGetString(GL_VERSION)
          << ", GLSL " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
 
     // Everything ok
     return 0;
 }
 
-void Framework::DestroyWindow()
+void Application::DestroyWindow()
 {
     assert(mWindow != nullptr);
     SDL_DestroyWindow(mWindow);
     SDL_Quit();
 }
 
-int Framework::Run(const string& windowTitle, uint width, uint height)
+int Application::Run(const string& windowTitle, uint width, uint height)
 {
 	try
 	{
@@ -118,7 +120,7 @@ int Framework::Run(const string& windowTitle, uint width, uint height)
 	}
 }
 
-void Framework::PrintSDLError()
+void Application::PrintSDLError()
 {
-	cerr << "SDL Error: " << SDL_GetError() << endl;
+	ERROR << "SDL Error: " << SDL_GetError() << endl;
 }

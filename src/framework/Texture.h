@@ -2,8 +2,7 @@
  * GL Framework
  * Copyright (c) David Avedissian 2014-2015
  */
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#pragma once
 
 class Texture
 {
@@ -24,5 +23,3 @@ private:
     uint mWidth;
     uint mHeight;
 };
-
-#endif /* TEXTURE_H */

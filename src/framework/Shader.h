@@ -2,8 +2,7 @@
  * GL Framework
  * Copyright (c) David Avedissian 2014-2015
  */
-#ifndef SHADER_H
-#define SHADER_H
+#pragma once
 
 enum ShaderType
 {
@@ -17,7 +16,7 @@ class Shader
 public:
     Shader(const string& vs, const string& fs);
     ~Shader();
-    
+
     // Bind this shader
     void Bind();
 
@@ -26,7 +25,7 @@ public:
 
 private:
     GLuint mProgram;
-    
+
 	GLuint CompileShader(ShaderType type, const string& sourceFile);
 	void LinkProgram();
 
@@ -73,5 +72,3 @@ template <> inline void Shader::SetUniform(const string& name, const glm::mat4& 
 {
     glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
-
-#endif /* SHADER_H */
