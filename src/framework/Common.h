@@ -38,6 +38,7 @@ using std::unique_ptr;
 using std::vector;
 
 typedef uint32_t uint;
+typedef uint64_t uint64;
 
 #ifdef WIN32
 #	pragma warning(pop)
@@ -72,19 +73,19 @@ typedef uint32_t uint;
 
 inline std::ostream& __info()
 {
-    COLOUR_INFO;
+    COLOUR_INFO
     return cout << "[info] ";
 }
 
 inline std::ostream& __warning()
 {
-    COLOUR_WARNING;
+    COLOUR_WARNING
     return cerr << "[warning] ";
 }
 
 inline std::ostream& __error()
 {
-    COLOUR_ERROR;
+    COLOUR_ERROR
     return cerr << "[error] ";
 }
 

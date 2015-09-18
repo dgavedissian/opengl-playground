@@ -66,7 +66,10 @@ add_prototype(DeferredShading)
 ## TODO
 
 # Galaxy
-set(SOURCE_FILES src/galaxy/Main.cpp)
+set(SOURCE_FILES
+    src/galaxy/Main.cpp
+    src/galaxy/Galaxy.cpp
+    src/galaxy/Galaxy.h)
 add_prototype(Galaxy)
 
 # Planet
