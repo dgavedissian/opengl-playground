@@ -12,17 +12,17 @@ Application::Application() : mWindow(nullptr), mWindowWidth(0), mWindowHeight(0)
 Application::~Application()
 {
     if (mWindow != nullptr)
-        DestroyWindow();
+        destroyWindow();
 }
 
-int Application::CreateWindow(const string& windowTitle, uint width, uint height)
+int Application::createWindow(const string& windowTitle, uint width, uint height)
 {
     INFO << "Starting " << windowTitle << endl;
 
     // Create a window
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        PrintSDLError();
+        printSDLError();
         return 1;
     }
 
@@ -35,7 +35,7 @@ int Application::CreateWindow(const string& windowTitle, uint width, uint height
                                width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
     if (mWindow == nullptr)
     {
-        PrintSDLError();
+        printSDLError();
         return 1;
 	}
 
@@ -63,20 +63,20 @@ int Application::CreateWindow(const string& windowTitle, uint width, uint height
     return 0;
 }
 
-void Application::DestroyWindow()
+void Application::destroyWindow()
 {
     assert(mWindow != nullptr);
     SDL_DestroyWindow(mWindow);
     SDL_Quit();
 }
 
-int Application::Run(const string& windowTitle, uint width, uint height)
+int Application::run(const string& windowTitle, uint width, uint height)
 {
 	try
 	{
-		if (CreateWindow(windowTitle, width, height) != 0)
+		if (createWindow(windowTitle, width, height) != 0)
 			return 1;
-		Startup();
+		startup();
 
 		// Main loop
 		SDL_Event e;
@@ -93,23 +93,23 @@ int Application::Run(const string& windowTitle, uint width, uint height)
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    OnMouseDown(e.button.button);
+                    onMouseDown(e.button.button);
                     break;
 
                 case SDL_MOUSEBUTTONUP:
-                    OnMouseUp(e.button.button);
+                    onMouseUp(e.button.button);
                     break;
 
                 case SDL_MOUSEMOTION:
-                    OnMouseMove(glm::vec2(e.motion.xrel, e.motion.yrel));
+                    onMouseMove(glm::vec2(e.motion.xrel, e.motion.yrel));
                     break;
 
 				case SDL_KEYDOWN:
-					OnKeyDown(e.key.keysym.sym);
+					onKeyDown(e.key.keysym.sym);
 					break;
 
                 case SDL_KEYUP:
-                    OnKeyUp(e.key.keysym.sym);
+                    onKeyUp(e.key.keysym.sym);
                     break;
 
 				default:
@@ -118,15 +118,15 @@ int Application::Run(const string& windowTitle, uint width, uint height)
 			}
 
 			// Render a frame
-			if (!Render())
+			if (!render())
 				quit = true;
 
 			// Swap the front and back buffer
 			SDL_GL_SwapWindow(mWindow);
 		}
 
-		Shutdown();
-		DestroyWindow();
+		shutdown();
+		destroyWindow();
 		return 0;
 	}
 	catch (std::exception& e)
@@ -137,32 +137,32 @@ int Application::Run(const string& windowTitle, uint width, uint height)
 	}
 }
 
-void Application::OnMouseDown(int button)
+void Application::onMouseDown(int button)
 {
-    mCameraMan.OnMouseDown(button);
+    mCameraMan.onMouseDown(button);
 }
 
-void Application::OnMouseUp(int button)
+void Application::onMouseUp(int button)
 {
-    mCameraMan.OnMouseUp(button);
+    mCameraMan.onMouseUp(button);
 }
 
-void Application::OnMouseMove(const glm::vec2& offset)
+void Application::onMouseMove(const glm::vec2& offset)
 {
-    mCameraMan.OnMouseMove(offset);
+    mCameraMan.onMouseMove(offset);
 }
 
-void Application::OnKeyDown(SDL_Keycode kc)
+void Application::onKeyDown(SDL_Keycode kc)
 {
-    mCameraMan.OnKeyDown(kc);
+    mCameraMan.onKeyDown(kc);
 }
 
-void Application::OnKeyUp(SDL_Keycode kc)
+void Application::onKeyUp(SDL_Keycode kc)
 {
-    mCameraMan.OnKeyUp(kc);
+    mCameraMan.onKeyUp(kc);
 }
 
-void Application::PrintSDLError()
+void Application::printSDLError()
 {
 	ERROR << "SDL Error: " << SDL_GetError() << endl;
 }

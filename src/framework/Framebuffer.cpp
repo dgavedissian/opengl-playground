@@ -18,7 +18,7 @@ Framebuffer::Framebuffer(uint width, uint height, uint textureCount)
     {
         Texture* texture = new Texture(width, height, GL_RGB32F, GL_FLOAT);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D,
-                               texture->GetID(), 0);
+                               texture->getId(), 0);
         mTextures.emplace_back(texture);
     }
 
@@ -53,12 +53,12 @@ Framebuffer::~Framebuffer()
     glDeleteFramebuffers(1, &mFramebuffer);
 }
 
-void Framebuffer::Bind()
+void Framebuffer::bind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
 }
 
-Texture* Framebuffer::GetColourBuffer(uint i)
+Texture* Framebuffer::getColourBuffer(uint i)
 {
     return mTextures[i].get();
 }

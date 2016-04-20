@@ -18,8 +18,8 @@ public:
                  vector<VertexAttribute> layout);
     ~Mesh();
 
-    void Bind();
-    void Draw();
+    void bind();
+    void draw();
 
 private:
     GLuint mVertexArrayObject, mVertexBufferObject, mElementBufferObject;

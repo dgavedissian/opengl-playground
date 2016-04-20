@@ -18,24 +18,24 @@ GalaxyOctreeNode::GalaxyOctreeNode(const glm::vec3& min, const glm::vec3& max, u
 GalaxyOctreeNode::~GalaxyOctreeNode()
 {
     if (mHasChildren)
-        Join();
+        join();
 }
 
-void GalaxyOctreeNode::Update(const glm::vec3& cameraPosition)
+void GalaxyOctreeNode::update(const glm::vec3& cameraPosition)
 {
 }
 
-void GalaxyOctreeNode::UpdateChildren(const glm::vec3& cameraPosition)
-{
-
-}
-
-void GalaxyOctreeNode::Split()
+void GalaxyOctreeNode::updateChildren(const glm::vec3& cameraPosition)
 {
 
 }
 
-void GalaxyOctreeNode::Join()
+void GalaxyOctreeNode::split()
+{
+
+}
+
+void GalaxyOctreeNode::join()
 {
 
 }
@@ -50,10 +50,10 @@ Galaxy::~Galaxy()
 {
 }
 
-void Galaxy::Update(const glm::vec3& cameraPosition)
+void Galaxy::update(const glm::vec3& cameraPosition)
 {
 }
 
-void Galaxy::Render()
+void Galaxy::render()
 {
 }

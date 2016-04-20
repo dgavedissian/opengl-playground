@@ -85,12 +85,12 @@ Mesh::~Mesh()
 {
 }
 
-void Mesh::Bind()
+void Mesh::bind()
 {
     glBindVertexArray(mVertexArrayObject);
 }
 
-void Mesh::Draw()
+void Mesh::draw()
 {
     if (mElementBufferObject != 0)
     {

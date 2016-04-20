@@ -10,17 +10,17 @@ public:
     CameraMan();
     ~CameraMan();
 
-    void SetPosition(const glm::vec3& position);
-    const glm::mat4& GetViewMatrix();
+    void setPosition(const glm::vec3& position);
+    const glm::mat4& getViewMatrix();
 
-    void Update(float dt);
+    void update(float dt);
 
     // Callbacks
-    void OnMouseDown(int button);
-    void OnMouseUp(int button);
-    void OnMouseMove(const glm::vec2& offset);
-    void OnKeyDown(SDL_Keycode kc);
-    void OnKeyUp(SDL_Keycode kc);
+    void onMouseDown(int button);
+    void onMouseUp(int button);
+    void onMouseMove(const glm::vec2& offset);
+    void onKeyDown(SDL_Keycode kc);
+    void onKeyUp(SDL_Keycode kc);
 
 private:
     bool mViewMatrixDirty;

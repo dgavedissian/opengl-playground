@@ -12,9 +12,9 @@ public:
     Framebuffer(uint width, uint height, uint textureCount);
     ~Framebuffer();
 
-    void Bind();
+    void bind();
 
-    Texture* GetColourBuffer(uint i);
+    Texture* getColourBuffer(uint i);
 
 private:
     uint mWidth, mHeight;

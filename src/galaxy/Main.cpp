@@ -15,24 +15,24 @@ private:
     Galaxy* mGalaxy;
 
 public:
-    virtual void Startup() override
+    virtual void startup() override
     {
         mGalaxy = new Galaxy(100.0f, 1.0f, 0xDEADBEEF);
     }
 
-	virtual bool Render() override
+	virtual bool render() override
     {
-        mGalaxy->Update(glm::vec3(0, 0, 0));
-        mGalaxy->Render();
+        mGalaxy->update(glm::vec3(0, 0, 0));
+        mGalaxy->render();
         return true;
     }
 
-	virtual void Shutdown() override
+	virtual void shutdown() override
     {
         delete mGalaxy;
     }
 
-	virtual void OnKeyDown(SDL_Keycode) override
+	virtual void onKeyDown(SDL_Keycode) override
     {
     }
 };

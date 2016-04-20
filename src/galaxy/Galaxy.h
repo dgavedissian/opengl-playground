@@ -16,12 +16,12 @@ public:
     GalaxyOctreeNode(const glm::vec3& min, const glm::vec3& max, uint level, Galaxy* parent);
     ~GalaxyOctreeNode();
 
-    void Update(const glm::vec3& cameraPosition);
+    void update(const glm::vec3& cameraPosition);
 
 private:
-    void UpdateChildren(const glm::vec3& cameraPosition);
-    void Split();
-    void Join();
+    void updateChildren(const glm::vec3& cameraPosition);
+    void split();
+    void join();
 
     glm::vec3 mMin;
     glm::vec3 mMax;
@@ -40,8 +40,8 @@ public:
     Galaxy(float radius, float thickness, uint64 seed);
     ~Galaxy();
 
-    void Update(const glm::vec3& cameraPosition);
-    void Render();
+    void update(const glm::vec3& cameraPosition);
+    void render();
 
 private:
     float mRadius;

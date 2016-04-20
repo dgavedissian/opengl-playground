@@ -9,7 +9,7 @@
 #define DEFINE_MAIN_FUNCTION(CLASS) \
     extern "C" int main(int, char**) \
     { \
-        return CLASS().Run(#CLASS, WIDTH, HEIGHT); \
+        return CLASS().run(#CLASS, WIDTH, HEIGHT); \
     }
 
 
@@ -19,22 +19,22 @@ public:
     Application();
     ~Application();
 
-	int CreateWindow(const string& windowTitle, uint width, uint height);
-    void DestroyWindow();
+	int createWindow(const string& windowTitle, uint width, uint height);
+    void destroyWindow();
 
-    int Run(const string& windowTitle, uint width, uint height);
+    int run(const string& windowTitle, uint width, uint height);
 
     // Application callbacks
-	virtual void Startup() = 0;
-	virtual void Shutdown() = 0;
-    virtual bool Render() = 0;
+	virtual void startup() = 0;
+	virtual void shutdown() = 0;
+    virtual bool render() = 0;
 
     // Optional callbacks
-    virtual void OnMouseDown(int button);
-    virtual void OnMouseUp(int button);
-    virtual void OnMouseMove(const glm::vec2& offset);
-    virtual void OnKeyDown(SDL_Keycode kc);
-    virtual void OnKeyUp(SDL_Keycode kc);
+    virtual void onMouseDown(int button);
+    virtual void onMouseUp(int button);
+    virtual void onMouseMove(const glm::vec2& offset);
+    virtual void onKeyDown(SDL_Keycode kc);
+    virtual void onKeyUp(SDL_Keycode kc);
 
 protected:
     glm::mat4 mViewMatrix;
@@ -48,5 +48,5 @@ private:
 	SDL_GLContext mContext;
 
 private:
-	void PrintSDLError();
+	void printSDLError();
 };

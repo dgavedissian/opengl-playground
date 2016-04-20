@@ -7,6 +7,6 @@
 namespace utils {
 
 // Read a file entirely into a string buffer
-string ReadEntireFile(const string& file);
+string readEntireFile(const string& file);
 
 }

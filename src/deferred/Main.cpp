@@ -14,11 +14,11 @@
 #define WIDTH 1024
 #define HEIGHT 768
 
-Mesh* GenerateFullscreenQuad();
-Mesh* GenerateBox(float halfSize);
-Mesh* GenerateLightSphere(float radius, int rings, int segments);
+Mesh* generateFullscreenQuad();
+Mesh* generateBox(float halfSize);
+Mesh* generateLightSphere(float radius, int rings, int segments);
 
-float TimeSinceEpoch()
+float timeSinceEpoch()
 {
 	return (float)clock() / (float)CLOCKS_PER_SEC;
 }
@@ -32,14 +32,14 @@ public:
           mAtten2(a2)
     {
         mShader = new Shader("media/light_pass.vs", "media/point_light_pass.fs");
-        mShader->Bind();
-        mShader->SetUniform("screenSize", glm::vec2(WIDTH, HEIGHT));
-        mShader->SetUniform("gb0", 0);
-        mShader->SetUniform("gb1", 1);
-        mShader->SetUniform("gb2", 2);
-        mShader->SetUniform("constant", a0);
-        mShader->SetUniform("linear", a1);
-        mShader->SetUniform("exponent", a2);
+        mShader->bind();
+        mShader->setUniform("screenSize", glm::vec2(WIDTH, HEIGHT));
+        mShader->setUniform("gb0", 0);
+        mShader->setUniform("gb1", 1);
+        mShader->setUniform("gb2", 2);
+        mShader->setUniform("constant", a0);
+        mShader->setUniform("linear", a1);
+        mShader->setUniform("exponent", a2);
 
         // Calculate range
         // Solve 'a2 * d^2 + a1 * d + a0 = 256' for d
@@ -62,7 +62,7 @@ public:
             range = (-a1 + sqrtf(a1 * a1 - 4.0f * a2 * (a0 - 256.0f))) / (2.0f * a2);
         }
 
-		mVertices = GenerateLightSphere(range, 8, 8);
+		mVertices = generateLightSphere(range, 8, 8);
     }
 
     ~PointLight()
@@ -71,24 +71,24 @@ public:
         delete mVertices;
     }
 
-    void SetPosition(const glm::vec3& position)
+    void setPosition(const glm::vec3& position)
     {
         mPosition = position;
         mWorld = glm::translate(glm::mat4(), position);
     }
 
-    void Draw(const glm::mat4& view, const glm::mat4& proj)
+    void draw(const glm::mat4& view, const glm::mat4& proj)
     {
         glm::mat4 wvp = proj * view * mWorld;
 
         // Bind shader
-        mShader->Bind();
-        mShader->SetUniform("worldViewProj", wvp);
-        mShader->SetUniform("lightPos", mPosition);
+        mShader->bind();
+        mShader->setUniform("worldViewProj", wvp);
+        mShader->setUniform("lightPos", mPosition);
 
         // Draw light
-        mVertices->Bind();
-        mVertices->Draw();
+        mVertices->bind();
+        mVertices->draw();
     }
 
 private:
@@ -121,28 +121,28 @@ private:
     vector<PointLight*> lights;
 
 public:
-    virtual void Startup() override
+    virtual void startup() override
     {
-        mCameraMan.SetPosition(glm::vec3(0.0f, 1.0f, 2.5f));
+        mCameraMan.setPosition(glm::vec3(0.0f, 1.0f, 2.5f));
         mProjMatrix = glm::perspective(45.0f, (float)WIDTH / HEIGHT, 0.1f, 10000.0f);
 
 		// Set up the g-buffer
 		mGBuffer = new Framebuffer(mWindowWidth, mWindowHeight, 3);
 
         // Set up post processing
-		mQuad = GenerateFullscreenQuad();
+		mQuad = generateFullscreenQuad();
         mPostShader = new Shader("media/quad.vs", "media/post.fs");
-        mPostShader->Bind();
-        mPostShader->SetUniform("gb0", 0);
-        mPostShader->SetUniform("gb1", 1);
-        mPostShader->SetUniform("gb2", 2);
+        mPostShader->bind();
+        mPostShader->setUniform("gb0", 0);
+        mPostShader->setUniform("gb1", 1);
+        mPostShader->setUniform("gb2", 2);
 
         // Set up scene
         mShader = new Shader("media/sample.vs", "media/sample.fs");
         mTexture = new Texture("media/wall.jpg");
 
         // Scene
-        mMesh = GenerateBox(0.5f);
+        mMesh = generateBox(0.5f);
 
         // Lights
         for (int x = -1; x <= 1; x++)
@@ -154,35 +154,35 @@ public:
                     if (!(x == y == z))
                         continue;
                     PointLight* light = new PointLight(0.75f, 0.0f, 1.0f);
-                    light->SetPosition(glm::vec3(x, y, z) * 0.6f);
+                    light->setPosition(glm::vec3(x, y, z) * 0.6f);
                     lights.push_back(light);
                 }
             }
         }
     }
 
-	virtual bool Render() override
+	virtual bool render() override
     {
         // Update the camera
-        mCameraMan.Update(0.0f);
+        mCameraMan.update(0.0f);
 
         // Start rendering to the g-buffer
-        mGBuffer->Bind();
+        mGBuffer->bind();
         glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         {
             // Set up the shader parameters
-            mShader->Bind();
+            mShader->bind();
             static glm::mat4 world;
 			world = glm::rotate(world, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
-            mShader->SetUniform("worldViewProj", mProjMatrix * mCameraMan.GetViewMatrix() * world);
-            mShader->SetUniform("world", world);
+            mShader->setUniform("worldViewProj", mProjMatrix * mCameraMan.getViewMatrix() * world);
+            mShader->setUniform("world", world);
 
             // Draw the mesh
             glActiveTexture(GL_TEXTURE0);
-            mTexture->Bind(0);
-            mMesh->Bind();
-            mMesh->Draw();
+            mTexture->bind(0);
+            mMesh->bind();
+            mMesh->draw();
         }
         glDisable(GL_DEPTH_TEST);
 
@@ -194,13 +194,13 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
         {
             // Bind G-Buffer
-            mGBuffer->GetColourBuffer(0)->Bind(0);
-            mGBuffer->GetColourBuffer(1)->Bind(1);
-            mGBuffer->GetColourBuffer(2)->Bind(2);
+            mGBuffer->getColourBuffer(0)->bind(0);
+            mGBuffer->getColourBuffer(1)->bind(1);
+            mGBuffer->getColourBuffer(2)->bind(2);
 
             // Draw point light
             for (auto i = lights.begin(); i != lights.end(); i++)
-                (*i)->Draw(mCameraMan.GetViewMatrix(), mProjMatrix);
+                (*i)->draw(mCameraMan.getViewMatrix(), mProjMatrix);
         }
         glDisable(GL_BLEND);
 
@@ -215,7 +215,7 @@ public:
         return true;
     }
 
-	virtual void Shutdown() override
+	virtual void shutdown() override
     {
         delete mShader;
         delete mTexture;
@@ -229,7 +229,7 @@ public:
 
 DEFINE_MAIN_FUNCTION(DeferredShadingApp)
 
-Mesh* GenerateFullscreenQuad()
+Mesh* generateFullscreenQuad()
 {
 	vector<GLfloat> quadVertices =
 	{
@@ -244,7 +244,7 @@ Mesh* GenerateFullscreenQuad()
 	return new Mesh(quadVertices, quadElements, quadLayout);
 }
 
-Mesh* GenerateBox(float halfSize)
+Mesh* generateBox(float halfSize)
 {
     return new Mesh({
 		// Position						| UVs		  | Normals
@@ -292,7 +292,7 @@ Mesh* GenerateBox(float halfSize)
 	}, {{3, GL_FLOAT}, {3, GL_FLOAT}, {2, GL_FLOAT}});
 }
 
-Mesh* GenerateLightSphere(float radius, int rings, int segments)
+Mesh* generateLightSphere(float radius, int rings, int segments)
 {
     vector<GLfloat> vertexData;
     vector<GLuint> indexData;

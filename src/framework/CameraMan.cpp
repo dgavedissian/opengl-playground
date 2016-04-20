@@ -21,13 +21,13 @@ CameraMan::~CameraMan()
 {
 }
 
-void CameraMan::SetPosition(const glm::vec3& position)
+void CameraMan::setPosition(const glm::vec3& position)
 {
     mPosition = position;
     mViewMatrixDirty = true;
 }
 
-const glm::mat4& CameraMan::GetViewMatrix()
+const glm::mat4& CameraMan::getViewMatrix()
 {
     if (mViewMatrixDirty)
     {
@@ -38,7 +38,7 @@ const glm::mat4& CameraMan::GetViewMatrix()
     return mCachedViewMatrix;
 }
 
-void CameraMan::Update(float dt)
+void CameraMan::update(float dt)
 {
     glm::vec3 motion;
     motion.z = ((int)mMotion[1] - (int)mMotion[0]) * mSpeed;
@@ -47,17 +47,17 @@ void CameraMan::Update(float dt)
     mViewMatrixDirty = true;
 }
 
-void CameraMan::OnMouseDown(int)
+void CameraMan::onMouseDown(int)
 {
     SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
-void CameraMan::OnMouseUp(int)
+void CameraMan::onMouseUp(int)
 {
     SDL_SetRelativeMouseMode(SDL_FALSE);
 }
 
-void CameraMan::OnMouseMove(const glm::vec2& offset)
+void CameraMan::onMouseMove(const glm::vec2& offset)
 {
     if (SDL_GetRelativeMouseMode() == SDL_TRUE)
     {
@@ -67,7 +67,7 @@ void CameraMan::OnMouseMove(const glm::vec2& offset)
     }
 }
 
-void CameraMan::OnKeyDown(SDL_Keycode kc)
+void CameraMan::onKeyDown(SDL_Keycode kc)
 {
     switch (kc)
     {
@@ -92,7 +92,7 @@ void CameraMan::OnKeyDown(SDL_Keycode kc)
     }
 }
 
-void CameraMan::OnKeyUp(SDL_Keycode kc)
+void CameraMan::onKeyUp(SDL_Keycode kc)
 {
     switch (kc)
     {

@@ -47,23 +47,23 @@ Texture::~Texture()
     glDeleteTextures(1, &mTextureID);
 }
 
-void Texture::Bind(uint unit)
+void Texture::bind(uint unit)
 {
     glActiveTexture(GL_TEXTURE0 + unit);
     glBindTexture(GL_TEXTURE_2D, mTextureID);
 }
 
-GLuint Texture::GetID() const
+GLuint Texture::getId() const
 {
     return mTextureID;
 }
 
-uint Texture::GetWidth() const
+uint Texture::getWidth() const
 {
     return mWidth;
 }
 
-uint Texture::GetHeight() const
+uint Texture::getHeight() const
 {
     return mHeight;
 }

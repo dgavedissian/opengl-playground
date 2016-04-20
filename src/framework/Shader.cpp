@@ -10,12 +10,12 @@ Shader::Shader(const string& vs, const string& fs)
 {
     mProgram = glCreateProgram();
 
-	GLuint vsID = CompileShader(VERTEX_SHADER, vs);
+	GLuint vsID = compileShader(VERTEX_SHADER, vs);
 	glAttachShader(mProgram, vsID);
-	GLuint fsID = CompileShader(FRAGMENT_SHADER, fs);
+	GLuint fsID = compileShader(FRAGMENT_SHADER, fs);
     glAttachShader(mProgram, fsID);
 
-	LinkProgram();
+	linkProgram();
 
     // Delete shaders now that they've been linked
     glDeleteShader(vsID);
@@ -28,12 +28,12 @@ Shader::~Shader()
         glDeleteProgram(mProgram);
 }
 
-void Shader::Bind()
+void Shader::bind()
 {
     glUseProgram(mProgram);
 }
 
-GLuint Shader::CompileShader(ShaderType type, const string& sourceFile)
+GLuint Shader::compileShader(ShaderType type, const string& sourceFile)
 {
 	// Output to the log
 	INFO << "Compiling Shader ";
@@ -60,7 +60,7 @@ GLuint Shader::CompileShader(ShaderType type, const string& sourceFile)
 	GLuint id = glCreateShader((GLuint)type);
 
 	// Read source code
-	string source = utils::ReadEntireFile(sourceFile);
+	string source = utils::readEntireFile(sourceFile);
 	const char* sourceFileData = source.c_str();
 	glShaderSource(id, 1, &sourceFileData, NULL);
 
@@ -86,7 +86,7 @@ GLuint Shader::CompileShader(ShaderType type, const string& sourceFile)
 	return id;
 }
 
-void Shader::LinkProgram()
+void Shader::linkProgram()
 {
 	// Link program
 	glLinkProgram(mProgram);
@@ -105,7 +105,7 @@ void Shader::LinkProgram()
 	}
 }
 
-GLint Shader::GetUniformLocation(const string& name)
+GLint Shader::getUniformLocation(const string& name)
 {
     GLint location = glGetUniformLocation(mProgram, name.c_str());
     if (location == -1)
