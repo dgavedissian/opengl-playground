@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(GLPrototypes)
+project(Prototypes)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Module path
@@ -53,22 +53,22 @@ endif()
 
 # Macro for adding a new prototype
 macro(add_prototype NAME)
-    add_executable(${NAME} ${TYPE} ${SOURCE_FILES})
+    add_executable(${NAME} ${TYPE} ${SRC_FILES})
     target_link_libraries(${NAME} Framework ${LIBS})
     create_vcproj_userfile(${NAME})
-    mirror_physical_directories(${FRAMEWORK_FILES} ${SOURCE_FILES})
+    mirror_physical_directories(${FRAMEWORK_FILES} ${SRC_FILES})
     set_property(TARGET ${NAME} PROPERTY FOLDER "Prototypes")
 endmacro()
 
 # Deferred Shading
-set(SOURCE_FILES src/deferred/Main.cpp)
+set(SRC_FILES src/deferred/Main.cpp)
 add_prototype(DeferredShading)
 
 # PBS
 ## TODO
 
 # Galaxy
-set(SOURCE_FILES
+set(SRC_FILES
     src/galaxy/Main.cpp
     src/galaxy/Galaxy.cpp
     src/galaxy/Galaxy.h)
