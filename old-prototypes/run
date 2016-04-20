@@ -1,0 +1,4 @@
+#!/bin/bash
+pushd bin
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$OGRE_HOME/lib/OGRE ./$1
+popd

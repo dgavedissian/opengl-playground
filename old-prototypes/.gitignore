@@ -1,0 +1,57 @@
+# Build dir
+build
+build*
+
+# Output Files
+bin/galaxy
+bin/planet
+bin/ogre.cfg
+*.dll
+*.exe
+*.log
+
+# OS junk files
+[Tt]humbs.db
+*.DS_Store
+ 
+# Visual Studio files
+*.pdb
+*.[Oo]bj
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.[Cc]ache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.sdf
+*.opensdf
+*.unsuccessfulbuild
+ipch/
+obj/
+[Dd]ebug*/
+[Rr]elease*/
+Ankh.NoLoad
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
